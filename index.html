@@ -356,20 +356,6 @@
       aspect-ratio:16/9;
     }
 
-    .placeholder{
-      width:100%;
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#cbd5e1;
-      font-size:13px;
-      background:
-        linear-gradient(135deg,rgba(255,255,255,.035) 25%,transparent 25%) 0 0/28px 28px,
-        linear-gradient(315deg,rgba(255,255,255,.035) 25%,transparent 25%) 0 0/28px 28px,
-        #0f172a;
-    }
-
     pre{
       margin:0;
       padding:14px;
@@ -416,6 +402,19 @@
 
     <div class="subtitle">
       Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models
+    </div>
+
+    <div class="authors" style="margin-top:10px;">
+      <strong>Mohammad Khoshnazar</strong><sup>1</sup> ·
+      <strong>Mohammad Dehghani Tezerjani</strong><sup>2</sup> ·
+      <strong>Qing Yang</strong><sup>2</sup> ·
+      <strong>Michael Beetz</strong><sup>1</sup>
+    </div>
+
+    <div class="affil">
+      <sup>1</sup> University of Bremen · Institute for Artificial Intelligence
+      &nbsp;&nbsp;·&nbsp;&nbsp;
+      <sup>2</sup> University of North Texas
     </div>
 
     <div class="links">
@@ -611,7 +610,7 @@
 
   <h2 id="abstract">Abstract</h2>
   <p>
-    <em>Placeholder.</em> This section will be updated as the full experimental study is completed.
+    Vision-language-action (VLA) policies are typically deployed under the assumption that the robot body realizes commanded actions similarly to the conditions seen during training. Persistent actuator faults violate this assumption: the policy may continue to predict semantically reasonable actions while a damaged or constrained actuator changes the action-to-motion map. We study whether task-reward reinforcement learning can recover task performance around a pretrained VLA under such physical failures without fault demonstrations, explicit fault identity, or a fault-free reference trajectory. We introduce <strong>Joint-Factorized Capability RL (JFCRL)</strong>, which processes each actuator with the same shared temporal capability encoder, grounds each capability token using the current manipulator Jacobian, composes the resulting tokens with cross-actuator attention, and conditions a Soft Actor-Critic correction policy on the resulting capability latent. Self-supervised joint-motion, end-effector-motion, and kinematic-consistency objectives train the capability representation directly from execution, while the control policy is optimized from task reward. In a preliminary held-out-fault experiment, the base VLA succeeds in 20% of episodes, while JFCRL reaches 60% without additional adaptation to the held-out actuator fault. A global-context baseline fits the seen fault distribution strongly but does not show comparable held-out transfer. These results support actuator-factorized, kinematically grounded capability inference as a promising mechanism for VLA recovery under unseen embodiment faults.
   </p>
 
   <h2 id="approach">Approach</h2>
@@ -663,7 +662,7 @@
 
   <h2 id="results">Results</h2>
   <p>
-    <em>Placeholder.</em> Quantitative recovery, transfer, and ablation results will be added here.
+    In the current held-out-fault pilot, the base VLA succeeds in <strong>20%</strong> of evaluation episodes, while JFCRL reaches <strong>60%</strong> using the same shared recovery policy and without additional adaptation to the held-out actuator fault. The result suggests that the factorized capability representation transfers beyond the fault conditions used for training. A global-context wide-pool baseline performs strongly on its seen fault distribution but does not show comparable transfer to the held-out fault.
   </p>
 
   <h2 id="bibtex">BibTeX</h2>
