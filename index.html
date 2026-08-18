@@ -348,6 +348,19 @@
       margin-top:14px;
     }
 
+    .video-card{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+
+    .video-title{
+      text-align:center;
+      font-size:13px;
+      font-weight:750;
+      color:var(--text);
+    }
+
     .video{
       border:1px solid var(--line);
       border-radius:14px;
@@ -638,25 +651,34 @@
   <h2 id="videos">Videos</h2>
 
   <div class="results-grid">
-    <div class="video">
-      <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
-        <source src="normal-vla.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+    <div class="video-card">
+      <div class="video-title">Nominal VLA Execution</div>
+      <div class="video">
+        <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
+          <source src="normal-vla.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
 
-    <div class="video">
-      <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
-        <source src="fault.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+    <div class="video-card">
+      <div class="video-title">VLA Under Physical Fault</div>
+      <div class="video">
+        <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
+          <source src="fault.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
 
-    <div class="video">
-      <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
-        <source src="RL.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+    <div class="video-card">
+      <div class="video-title">REPAIR: RL Recovery on Top of the VLA</div>
+      <div class="video">
+        <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
+          <source src="RL.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
   </div>
 
