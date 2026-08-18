@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>REPAIR — Reinforcement-Enabled Policy Adaptation for Impaired Robots</title>
-  <meta
-    name="description"
-    content="REPAIR studies task-reward-only adaptation of frozen Vision-Language-Action models to physical robot faults."
-  />
+  <meta name="description"
+        content="REPAIR learns capability-aware reinforcement-learning corrections for Vision-Language-Action robot policies under physical faults." />
 
   <style>
     :root{
@@ -18,13 +16,9 @@
       --bg:#ffffff;
       --accent:#2563eb;
       --soft:#f8fafc;
-      --green:#16a34a;
-      --orange:#ea580c;
     }
 
     *{ box-sizing:border-box; }
-
-    html{ scroll-behavior:smooth; }
 
     body{
       margin:0;
@@ -49,15 +43,15 @@
     }
 
     h1{
-      margin:0 0 10px;
+      margin:0 0 8px;
       font-size:32px;
       font-weight:800;
-      letter-spacing:.1px;
+      letter-spacing:.2px;
     }
 
     .subtitle{
-      margin:0 auto 12px;
-      max-width:850px;
+      margin:0 auto 10px;
+      max-width:900px;
       color:var(--muted);
       font-size:16px;
     }
@@ -75,27 +69,25 @@
     }
 
     .links{
-      margin:10px 0 12px;
+      margin:8px 0 10px;
       display:flex;
       justify-content:center;
       gap:16px;
       flex-wrap:wrap;
       font-size:14px;
-      color:var(--muted);
     }
 
     .links a{ font-weight:600; }
 
     .claim{
-      margin:16px auto 0;
-      max-width:920px;
+      margin:14px auto 0;
+      max-width:900px;
       font-size:18px;
       font-weight:600;
-      color:var(--text);
     }
 
     h2{
-      margin:28px 0 10px;
+      margin:26px 0 10px;
       padding-top:18px;
       border-top:1px solid var(--line);
       font-size:22px;
@@ -110,31 +102,38 @@
 
     p{ margin:10px 0; }
 
-    /* ---------------- architecture ---------------- */
+    /* ------------------------------------------------------------
+       ENACT-style animated figure
+       ------------------------------------------------------------ */
 
-    .architecture{
-      margin:22px 0 10px;
+    .anim-wrap{
+      margin:18px 0 10px;
       border:1px solid var(--line);
       border-radius:18px;
-      overflow:hidden;
       background:linear-gradient(180deg,#fbfdff 0%,#f8fbff 100%);
+      overflow:hidden;
       box-shadow:0 8px 24px rgba(15,23,42,.05);
     }
 
-    .architecture-head{
+    .anim-head{
       padding:16px 18px 12px;
-      background:#fff;
       border-bottom:1px solid var(--line);
-      text-align:left;
+      background:#fff;
     }
 
-    .architecture-head h3{
-      margin:0;
+    .anim-head h3{
+      margin:0 0 4px;
       font-size:18px;
     }
 
-    .architecture-inner{
-      padding:16px 12px 10px;
+    .anim-head p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .anim-inner{
+      padding:18px 14px 12px;
     }
 
     .pipeline-svg{
@@ -143,106 +142,204 @@
       display:block;
     }
 
-    .box{
-      fill:#fff;
+    .step-box{
+      fill:#ffffff;
       stroke:#cbd5e1;
       stroke-width:2;
-      rx:18;
-      ry:18;
-      filter:drop-shadow(0 5px 14px rgba(15,23,42,.05));
+      rx:20;
+      ry:20;
+      filter:drop-shadow(0 6px 18px rgba(15,23,42,.06));
+      transition:fill .25s ease,stroke .25s ease;
     }
 
-    .box.frozen{
-      fill:#eff6ff;
-      stroke:#60a5fa;
-    }
-
-    .box.rl{
-      fill:#f0fdf4;
-      stroke:#4ade80;
-    }
-
-    .box.robot{
-      fill:#fff7ed;
-      stroke:#fb923c;
-    }
-
-    .label{
-      font-size:15px;
-      font-weight:750;
+    .step-label{
+      font-size:14px;
+      font-weight:700;
       fill:#0f172a;
       text-anchor:middle;
     }
 
-    .sub{
-      font-size:11.5px;
+    .step-sub{
+      font-size:11px;
       fill:#64748b;
       text-anchor:middle;
     }
 
-    .arrow{
-      fill:none;
-      stroke:#64748b;
-      stroke-width:2.3;
-      marker-end:url(#arrowhead);
+    .step-icon{
+      font-size:22px;
+      text-anchor:middle;
     }
 
-    .arrow-accent{
+    .step-group{
+      opacity:.32;
+      transition:opacity .35s ease;
+      pointer-events:none;
+    }
+
+    .step-group.visible{
+      opacity:1;
+    }
+
+    .step-group.active .step-box{
+      fill:#eff6ff;
+      stroke:#60a5fa;
+    }
+
+    .step-group.done .step-box{
+      fill:#f0fdf4;
+      stroke:#4ade80;
+    }
+
+    .flow-base{
+      fill:none;
+      stroke:#dbe2ea;
+      stroke-width:4;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .flow-progress{
       fill:none;
       stroke:#2563eb;
-      stroke-width:3;
-      marker-end:url(#arrowheadBlue);
+      stroke-width:5;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      stroke-dasharray:1000;
+      stroke-dashoffset:1000;
+      filter:drop-shadow(0 0 2px rgba(37,99,235,.35));
     }
 
-    .arrow-feedback{
-      fill:none;
+    .flow-feedback{
       stroke:#16a34a;
-      stroke-width:3;
-      stroke-dasharray:7 6;
-      marker-end:url(#arrowheadGreen);
     }
 
-    .pill{
-      fill:#fff;
-      stroke:#cbd5e1;
-      stroke-width:1.5;
-      rx:14;
-      ry:14;
+    .pulse-dot{
+      fill:#2563eb;
+      opacity:0;
+      filter:drop-shadow(0 0 5px rgba(37,99,235,.5));
     }
 
-    .pilltext{
-      font-size:11px;
-      fill:#334155;
+    .small-label{
+      font-size:10.5px;
+      font-weight:700;
+      fill:#64748b;
       text-anchor:middle;
-      font-weight:650;
     }
 
-    /* ---------------- content ---------------- */
-
-    .callout-grid{
+    .notes-grid{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(5,minmax(0,1fr));
       gap:12px;
-      margin:14px 0 4px;
+      padding:5px 14px 14px;
     }
 
-    .callout{
+    .note-card{
       border:1px solid var(--line);
       border-radius:14px;
       background:#fff;
-      padding:12px 14px;
+      padding:11px 11px;
+      font-size:12px;
       color:var(--muted);
-      font-size:13px;
       min-height:86px;
+      opacity:.52;
+      transition:all .3s ease;
+      line-height:1.45;
     }
 
-    .callout strong{
+    .note-card strong{
       display:block;
       color:var(--text);
-      margin-bottom:3px;
+      margin-bottom:4px;
+      font-size:12.25px;
+      line-height:1.35;
     }
 
-    /* ---------------- videos ---------------- */
+    .note-card.active{
+      opacity:1;
+      border-color:#93c5fd;
+      background:#f8fbff;
+      box-shadow:0 4px 16px rgba(37,99,235,.08);
+      transform:translateY(-1px);
+    }
+
+    .info-row{
+      display:flex;
+      justify-content:center;
+      gap:9px;
+      flex-wrap:wrap;
+      padding:0 14px 14px;
+    }
+
+    .chip{
+      border:1px solid var(--line);
+      background:#fff;
+      color:#334155;
+      border-radius:999px;
+      padding:6px 11px;
+      font-size:11.5px;
+      font-weight:700;
+    }
+
+    /* ------------------------------------------------------------
+       Small generalization strip
+       ------------------------------------------------------------ */
+
+    .generalize{
+      margin:2px 14px 17px;
+      border-top:1px solid var(--line);
+      padding-top:13px;
+    }
+
+    .generalize-title{
+      text-align:center;
+      font-size:12.5px;
+      font-weight:800;
+      color:var(--text);
+      margin-bottom:9px;
+    }
+
+    .generalize-flow{
+      display:grid;
+      grid-template-columns:1fr 30px 1.15fr 30px 1fr;
+      gap:7px;
+      align-items:center;
+      max-width:810px;
+      margin:0 auto;
+    }
+
+    .g-card{
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      padding:9px 10px;
+      text-align:center;
+      min-height:66px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .g-card strong{
+      font-size:12px;
+      line-height:1.3;
+    }
+
+    .g-card span{
+      margin-top:3px;
+      font-size:10.7px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    .g-arrow{
+      text-align:center;
+      color:#94a3b8;
+      font-size:20px;
+    }
+
+    /* ------------------------------------------------------------
+       Videos / rest
+       ------------------------------------------------------------ */
 
     .results-grid{
       display:grid;
@@ -256,15 +353,7 @@
       border-radius:14px;
       overflow:hidden;
       background:#0f172a;
-      aspect-ratio:16 / 9;
-    }
-
-    .video video{
-      width:100%;
-      height:100%;
-      display:block;
-      object-fit:cover;
-      background:#0f172a;
+      aspect-ratio:16/9;
     }
 
     .placeholder{
@@ -275,7 +364,6 @@
       justify-content:center;
       color:#cbd5e1;
       font-size:13px;
-      letter-spacing:.2px;
       background:
         linear-gradient(135deg,rgba(255,255,255,.035) 25%,transparent 25%) 0 0/28px 28px,
         linear-gradient(315deg,rgba(255,255,255,.035) 25%,transparent 25%) 0 0/28px 28px,
@@ -305,236 +393,433 @@
       flex-wrap:wrap;
     }
 
-    @media (max-width:850px){
-      .results-grid,
-      .callout-grid{
+    @media(max-width:980px){
+      .notes-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+
+    @media(max-width:760px){
+      .notes-grid{
         grid-template-columns:1fr;
       }
 
-      h1{ font-size:27px; }
-      .claim{ font-size:16px; }
+      .generalize-flow{
+        grid-template-columns:1fr;
+      }
+
+      .g-arrow{
+        transform:rotate(90deg);
+      }
+
+      .results-grid{
+        grid-template-columns:1fr;
+      }
+
+      h1{font-size:26px}
+      .claim{font-size:16px}
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <header>
-      <h1>REPAIR</h1>
+  <header>
+    <h1>REPAIR</h1>
 
-      <div class="subtitle">
-        Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models
+    <div class="subtitle">
+      Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models
+    </div>
+
+    <div class="authors">
+      <strong>Mohammad Khoshnazar</strong>
+    </div>
+
+    <div class="affil">
+      University of Bremen · Institute for Artificial Intelligence
+    </div>
+
+    <div class="links">
+      <a href="#" target="_blank" rel="noopener">Paper</a>
+      <a href="https://mkhoshnam.github.io/repair-vla/" target="_blank" rel="noopener">Project</a>
+      <a href="https://github.com/mkhoshnam/repair-vla" target="_blank" rel="noopener">Code</a>
+      <a href="#videos">Videos</a>
+      <a href="#approach">Approach</a>
+      <a href="#bibtex">BibTeX</a>
+    </div>
+
+    <div class="claim">
+      A capability-aware residual policy adapts a pretrained robot policy to physical impairments using task reward and execution feedback.
+    </div>
+  </header>
+
+  <div class="anim-wrap">
+    <div class="anim-head">
+      <h3>REPAIR pipeline</h3>
+      <p>From task execution to capability inference and corrective control.</p>
+    </div>
+
+    <div class="anim-inner">
+      <svg class="pipeline-svg"
+           viewBox="0 0 1120 340"
+           xmlns="http://www.w3.org/2000/svg"
+           aria-label="Animated REPAIR pipeline">
+
+        <!-- main top row -->
+        <g id="step1" class="step-group visible active">
+          <rect class="step-box" x="20" y="48" width="180" height="112"/>
+          <text class="step-icon" x="110" y="82">👁️</text>
+          <text class="step-label" x="110" y="108">Task + Observation</text>
+          <text class="step-sub" x="110" y="132">language · vision · robot state</text>
+        </g>
+
+        <g id="step2" class="step-group">
+          <rect class="step-box" x="245" y="48" width="180" height="112"/>
+          <text class="step-icon" x="335" y="82">🧠</text>
+          <text class="step-label" x="335" y="108">Pretrained VLA</text>
+          <text class="step-sub" x="335" y="132">task-directed base action</text>
+        </g>
+
+        <g id="step3" class="step-group">
+          <rect class="step-box" x="470" y="48" width="180" height="112"/>
+          <text class="step-icon" x="560" y="82">➕</text>
+          <text class="step-label" x="560" y="108">Action Composition</text>
+          <text class="step-sub" x="560" y="132">base action + correction</text>
+        </g>
+
+        <g id="step4" class="step-group">
+          <rect class="step-box" x="695" y="48" width="180" height="112"/>
+          <text class="step-icon" x="785" y="82">🦾</text>
+          <text class="step-label" x="785" y="108">Robot Execution</text>
+          <text class="step-sub" x="785" y="132">actual physical response</text>
+        </g>
+
+        <!-- bottom recovery path -->
+        <g id="step5" class="step-group">
+          <rect class="step-box" x="775" y="220" width="210" height="100"/>
+          <text class="step-icon" x="880" y="251">📡</text>
+          <text class="step-label" x="880" y="276">Execution Feedback</text>
+          <text class="step-sub" x="880" y="298">command vs. realized motion</text>
+        </g>
+
+        <g id="step6" class="step-group">
+          <rect class="step-box" x="500" y="220" width="220" height="100"/>
+          <text class="step-icon" x="610" y="251">🔗</text>
+          <text class="step-label" x="610" y="276">Capability Representation</text>
+          <text class="step-sub" x="610" y="296">shared encoder · Jacobian · attention</text>
+        </g>
+
+        <g id="step7" class="step-group">
+          <rect class="step-box" x="230" y="220" width="215" height="100"/>
+          <text class="step-icon" x="337" y="251">🎛️</text>
+          <text class="step-label" x="337" y="276">Residual RL</text>
+          <text class="step-sub" x="337" y="296">capability-conditioned correction</text>
+        </g>
+
+        <!-- informational labels, not connected -->
+        <text class="small-label" x="1050" y="245">task reward</text>
+        <text class="small-label" x="1050" y="260">learning signal</text>
+
+        <!-- base routes -->
+        <path class="flow-base" d="M200 104 L245 104"/>
+        <path class="flow-base" d="M425 104 L470 104"/>
+        <path class="flow-base" d="M650 104 L695 104"/>
+
+        <!-- robot feedback down, then left; no box penetration -->
+        <path class="flow-base" d="M785 160 L785 190 L880 190 L880 220"/>
+        <path class="flow-base" d="M775 270 L720 270"/>
+        <path class="flow-base" d="M500 270 L445 270"/>
+
+        <!-- correction returns to composition from below -->
+        <path class="flow-base" d="M337 220 L337 188 L560 188 L560 160"/>
+
+        <!-- animated paths -->
+        <path id="seg12" class="flow-progress" d="M200 104 L245 104"/>
+        <path id="seg23" class="flow-progress" d="M425 104 L470 104"/>
+        <path id="seg34" class="flow-progress" d="M650 104 L695 104"/>
+
+        <path id="seg45a" class="flow-progress flow-feedback" d="M785 160 L785 190"/>
+        <path id="seg45b" class="flow-progress flow-feedback" d="M785 190 L880 190"/>
+        <path id="seg45c" class="flow-progress flow-feedback" d="M880 190 L880 220"/>
+
+        <path id="seg56" class="flow-progress flow-feedback" d="M775 270 L720 270"/>
+        <path id="seg67" class="flow-progress" d="M500 270 L445 270"/>
+
+        <path id="seg73a" class="flow-progress" d="M337 220 L337 188"/>
+        <path id="seg73b" class="flow-progress" d="M337 188 L560 188"/>
+        <path id="seg73c" class="flow-progress" d="M560 188 L560 160"/>
+
+        <circle id="pulseDot" class="pulse-dot" cx="200" cy="104" r="8"/>
+      </svg>
+    </div>
+
+    <div class="notes-grid">
+      <div id="note1" class="note-card active">
+        <strong>1. Task policy acts</strong>
+        The pretrained VLA proposes the task-directed action from the current observation.
       </div>
 
-      <div class="authors">
-        <strong>Mohammad Khoshnazar</strong>
-        <!-- Add co-authors here later -->
+      <div id="note2" class="note-card">
+        <strong>2. Physical response is observed</strong>
+        The robot may realize the commanded motion differently when its capability changes.
       </div>
 
-      <div class="affil">
-        University of Bremen · Institute for Artificial Intelligence
+      <div id="note3" class="note-card">
+        <strong>3. Capability is inferred</strong>
+        A shared per-actuator encoder combines execution history with current kinematic information.
       </div>
 
-      <div class="links">
-        <a href="#" target="_blank" rel="noopener">Paper</a>
-        <a href="https://mkhoshnam.github.io/repair-vla/" target="_blank" rel="noopener">Project</a>
-        <a href="https://github.com/mkhoshnam/repair-vla" target="_blank" rel="noopener">Code</a>
-        <a href="#videos">Videos</a>
-        <a href="#approach">Approach</a>
-        <a href="#bibtex">BibTeX</a>
+      <div id="note4" class="note-card">
+        <strong>4. Information is composed</strong>
+        Cross-actuator attention builds a compact representation of the robot's current capability.
       </div>
 
-      <div class="claim">
-        Can a frozen Vision-Language-Action model adapt to physical robot faults using task reward alone, without fault demonstrations, reference trajectories, or explicit fault labels?
-      </div>
-    </header>
-
-    <!-- ============================================================
-         ARCHITECTURE
-         ============================================================ -->
-    <section class="architecture" aria-label="REPAIR architecture">
-      <div class="architecture-head">
-        <h3>REPAIR architecture</h3>
-      </div>
-
-      <div class="architecture-inner">
-        <svg class="pipeline-svg" viewBox="0 0 1120 460" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
-            </marker>
-            <marker id="arrowheadBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
-            </marker>
-            <marker id="arrowheadGreen" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L9,3 z" fill="#16a34a"/>
-            </marker>
-          </defs>
-
-          <!-- top path -->
-          <rect class="box" x="25" y="55" width="195" height="110"/>
-          <text class="label" x="122" y="98">Task + Observation</text>
-          <text class="sub" x="122" y="123">language + RGB + proprioception</text>
-
-          <rect class="box frozen" x="280" y="55" width="195" height="110"/>
-          <text class="label" x="377" y="95">Frozen VLA</text>
-          <text class="sub" x="377" y="120">OpenVLA-OFT</text>
-          <text class="sub" x="377" y="139">weights remain frozen</text>
-
-          <rect class="box" x="535" y="55" width="175" height="110"/>
-          <text class="label" x="622" y="98">Base Action</text>
-          <text class="sub" x="622" y="123">a<tspan baseline-shift="sub">VLA</tspan></text>
-
-          <rect class="box robot" x="875" y="55" width="210" height="110"/>
-          <text class="label" x="980" y="95">Impaired Robot</text>
-          <text class="sub" x="980" y="120">joint lock / degradation</text>
-          <text class="sub" x="980" y="139">physical dynamics change</text>
-
-          <!-- residual learner -->
-          <rect class="box rl" x="295" y="270" width="250" height="120"/>
-          <text class="label" x="420" y="311">Shared Fault-Agnostic RL</text>
-          <text class="sub" x="420" y="336">one residual policy</text>
-          <text class="sub" x="420" y="355">no fault identity input</text>
-
-          <rect class="box" x="610" y="270" width="185" height="120"/>
-          <text class="label" x="702" y="313">Residual Action</text>
-          <text class="sub" x="702" y="338">Δa<tspan baseline-shift="sub">RL</tspan></text>
-          <text class="sub" x="702" y="357">arm correction</text>
-
-          <rect class="box" x="825" y="270" width="235" height="120"/>
-          <text class="label" x="942" y="310">Action Composition</text>
-          <text class="sub" x="942" y="336">a<tspan baseline-shift="sub">final</tspan> = a<tspan baseline-shift="sub">VLA</tspan> + Δa<tspan baseline-shift="sub">RL</tspan></text>
-          <text class="sub" x="942" y="356">bounded residual authority</text>
-
-          <!-- arrows -->
-          <path class="arrow-accent" d="M220 110 L280 110"/>
-          <path class="arrow-accent" d="M475 110 L535 110"/>
-          <path class="arrow" d="M710 110 L835 110 L835 325 L825 325"/>
-          <path class="arrow-accent" d="M795 330 L825 330"/>
-          <path class="arrow-accent" d="M1060 330 L1090 330 L1090 180 L980 180 L980 165"/>
-
-          <!-- feedback -->
-          <path class="arrow-feedback" d="M955 165 L955 220 L420 220 L420 270"/>
-          <text class="sub" x="690" y="210">execution feedback: commanded vs. realized motion + joint state history</text>
-
-          <!-- task reward -->
-          <path class="arrow-feedback" d="M875 125 L760 125 L760 415 L420 415 L420 390"/>
-          <rect class="pill" x="560" y="400" width="175" height="34"/>
-          <text class="pilltext" x="647" y="421">task success reward only</text>
-
-          <!-- no-label pills -->
-          <rect class="pill" x="30" y="305" width="190" height="34"/>
-          <text class="pilltext" x="125" y="326">no fault demonstrations</text>
-
-          <rect class="pill" x="30" y="350" width="190" height="34"/>
-          <text class="pilltext" x="125" y="371">no reference trajectory</text>
-
-          <rect class="pill" x="30" y="395" width="190" height="34"/>
-          <text class="pilltext" x="125" y="416">no explicit fault ID</text>
-        </svg>
-      </div>
-    </section>
-
-    <div class="callout-grid">
-      <div class="callout">
-        <strong>Frozen foundation policy</strong>
-        The VLA remains unchanged; adaptation is performed by a lightweight residual controller.
-      </div>
-
-      <div class="callout">
-        <strong>Fault-agnostic recovery</strong>
-        A shared policy must infer altered robot capability from execution feedback instead of receiving a fault label.
-      </div>
-
-      <div class="callout">
-        <strong>Task-reward-only learning</strong>
-        Recovery is learned from task success without healthy reference trajectories or fault demonstrations.
+      <div id="note5" class="note-card">
+        <strong>5. Control is corrected</strong>
+        Reinforcement learning produces a bounded residual correction that is added to the base action.
       </div>
     </div>
 
-    <!-- ============================================================
-         ABSTRACT
-         ============================================================ -->
-    <h2 id="abstract">Abstract</h2>
-    <p>
-      <em>Placeholder.</em> This section will contain the final abstract once the shared-policy experiments and evaluation protocol are complete.
-    </p>
-
-    <!-- ============================================================
-         APPROACH
-         ============================================================ -->
-    <h2 id="approach">Approach</h2>
-
-    <h3>Frozen Vision-Language-Action policy</h3>
-    <p>
-      A pretrained VLA provides the base manipulation action and remains frozen throughout adaptation.
-    </p>
-
-    <h3>Shared fault-agnostic residual policy</h3>
-    <p>
-      A single residual reinforcement-learning policy is trained across multiple physical fault conditions. Fault identity is not provided to the policy.
-    </p>
-
-    <h3>Execution-feedback conditioning</h3>
-    <p>
-      The residual policy uses proprioception and recent commanded-versus-realized motion history to infer when the robot is no longer responding as expected.
-    </p>
-
-    <h3>Task-reward-only adaptation</h3>
-    <p>
-      The learning signal is task success. The method does not require fault demonstrations, nominal reference trajectories, or supervised fault labels.
-    </p>
-
-    <!-- ============================================================
-         VIDEOS
-         Replace video1.mp4, video2.mp4, video3.mp4 later.
-         No captions are intentionally included.
-         ============================================================ -->
-    <h2 id="videos">Videos</h2>
-
-    <div class="results-grid">
-      <div class="video">
-        <div class="placeholder">Video placeholder 1</div>
-      </div>
-
-      <div class="video">
-        <div class="placeholder">Video placeholder 2</div>
-      </div>
-
-      <div class="video">
-        <div class="placeholder">Video placeholder 3</div>
-      </div>
+    <div class="info-row">
+      <div class="chip">Task reward only</div>
+      <div class="chip">No explicit fault identity</div>
+      <div class="chip">No joint-ID embedding</div>
+      <div class="chip">No reference trajectory</div>
+      <div class="chip">No fault demonstrations</div>
     </div>
 
-    <!-- ============================================================
-         RESULTS
-         ============================================================ -->
-    <h2 id="results">Results</h2>
-    <p>
-      <em>Placeholder.</em> Final quantitative results, per-fault comparisons, generalization experiments, and ablations will be added here.
-    </p>
+    <div class="generalize">
+      <div class="generalize-title">Why the same policy can transfer to a held-out actuator fault</div>
 
-    <!-- ============================================================
-         BIBTEX
-         ============================================================ -->
-    <h2 id="bibtex">BibTeX</h2>
-    <pre>@misc{repair2026,
+      <div class="generalize-flow">
+        <div class="g-card">
+          <strong>Shared capability encoder</strong>
+          <span>identical weights for every actuator</span>
+        </div>
+
+        <div class="g-arrow">→</div>
+
+        <div class="g-card">
+          <strong>Live kinematic grounding</strong>
+          <span>the Jacobian provides the actuator's current geometric role</span>
+        </div>
+
+        <div class="g-arrow">→</div>
+
+        <div class="g-card">
+          <strong>Held-out fault</strong>
+          <span>processed through the same capability pathway</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 id="abstract">Abstract</h2>
+  <p>
+    <em>Placeholder.</em> This section will be updated as the full experimental study is completed.
+  </p>
+
+  <h2 id="approach">Approach</h2>
+
+  <h3>Capability-aware adaptation</h3>
+  <p>
+    REPAIR uses recent execution history to infer how the robot's effective physical capability has changed during task execution.
+  </p>
+
+  <h3>Shared capability representation</h3>
+  <p>
+    The same temporal encoder is applied across actuators, while current kinematic information grounds each local capability representation in its geometric effect on robot motion. Cross-actuator attention then forms a global capability state.
+  </p>
+
+  <h3>Residual reinforcement learning</h3>
+  <p>
+    The inferred capability state conditions a residual reinforcement-learning controller that adapts the task-directed base action using task reward.
+  </p>
+
+  <h3>Generalization</h3>
+  <p>
+    The method is designed to transfer to held-out physical faults by reusing the same capability encoder and grounding mechanism rather than relying on explicit fault identity.
+  </p>
+
+  <h2 id="videos">Videos</h2>
+
+  <div class="results-grid">
+    <div class="video"><div class="placeholder">Video placeholder 1</div></div>
+    <div class="video"><div class="placeholder">Video placeholder 2</div></div>
+    <div class="video"><div class="placeholder">Video placeholder 3</div></div>
+  </div>
+
+  <h2 id="results">Results</h2>
+  <p>
+    <em>Placeholder.</em> Quantitative recovery, transfer, and ablation results will be added here.
+  </p>
+
+  <h2 id="bibtex">BibTeX</h2>
+  <pre>@misc{repair2027,
   title  = {REPAIR: Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models},
   author = {},
-  year   = {2027},
+  year   = {2026},
   url    = {https://mkhoshnam.github.io/repair-vla/}
 }</pre>
 
-    <div class="footer">
-      <div>© <span id="year"></span> REPAIR</div>
-      <div>Built with GitHub Pages</div>
-    </div>
-
+  <div class="footer">
+    <div>© <span id="year"></span> REPAIR</div>
+    <div>Built with GitHub Pages</div>
   </div>
+</div>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const allSteps = ["step1","step2","step3","step4","step5","step6","step7"];
+  const allNotes = ["note1","note2","note3","note4","note5"];
+  const allSegs = [
+    "seg12","seg23","seg34",
+    "seg45a","seg45b","seg45c",
+    "seg56","seg67",
+    "seg73a","seg73b","seg73c"
+  ];
+
+  function resetPipeline(){
+    allSteps.forEach((id,idx)=>{
+      const el=document.getElementById(id);
+      el.classList.remove("visible","active","done");
+      if(idx===0) el.classList.add("visible","active");
+    });
+
+    allNotes.forEach((id,idx)=>{
+      document.getElementById(id).classList.toggle("active",idx===0);
+    });
+
+    allSegs.forEach(id=>{
+      const p=document.getElementById(id);
+      const len=p.getTotalLength();
+      p.style.strokeDasharray=len;
+      p.style.strokeDashoffset=len;
+    });
+
+    const dot=document.getElementById("pulseDot");
+    dot.style.opacity=0;
+    dot.setAttribute("cx","200");
+    dot.setAttribute("cy","104");
+  }
+
+  function setVisible(id){
+    document.getElementById(id).classList.add("visible");
+  }
+
+  function setActive(id){
+    allSteps.forEach(stepId=>{
+      document.getElementById(stepId).classList.remove("active");
+    });
+    document.getElementById(id).classList.add("active");
+  }
+
+  function setDone(id){
+    const el=document.getElementById(id);
+    el.classList.remove("active");
+    el.classList.add("done");
+  }
+
+  function setNote(index){
+    allNotes.forEach((id,idx)=>{
+      document.getElementById(id).classList.toggle("active",idx===index);
+    });
+  }
+
+  function animateSegment(pathId,fromStep,toStep,duration,callback){
+    const path=document.getElementById(pathId);
+    const dot=document.getElementById("pulseDot");
+    const len=path.getTotalLength();
+
+    setActive(fromStep);
+    path.style.strokeDasharray=len;
+    path.style.strokeDashoffset=len;
+    dot.style.opacity=1;
+
+    let start=null;
+
+    function frame(ts){
+      if(!start) start=ts;
+      const p=Math.min((ts-start)/duration,1);
+
+      path.style.strokeDashoffset=len*(1-p);
+
+      const pt=path.getPointAtLength(len*p);
+      dot.setAttribute("cx",pt.x);
+      dot.setAttribute("cy",pt.y);
+
+      if(p<1){
+        requestAnimationFrame(frame);
+      }else{
+        if(toStep && toStep!==fromStep){
+          setDone(fromStep);
+          setVisible(toStep);
+          setActive(toStep);
+        }
+        if(callback) callback();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function runPipeline(){
+    resetPipeline();
+
+    setTimeout(()=>{
+      animateSegment("seg12","step1","step2",650,()=>{
+        setNote(0);
+
+        setTimeout(()=>{
+          animateSegment("seg23","step2","step3",650,()=>{
+
+            setTimeout(()=>{
+              animateSegment("seg34","step3","step4",650,()=>{
+                setNote(1);
+
+                setTimeout(()=>{
+                  animateSegment("seg45a","step4","step4",260,()=>{
+                    animateSegment("seg45b","step4","step4",430,()=>{
+                      animateSegment("seg45c","step4","step5",260,()=>{
+                        setNote(2);
+
+                        setTimeout(()=>{
+                          animateSegment("seg56","step5","step6",620,()=>{
+                            setNote(3);
+
+                            setTimeout(()=>{
+                              animateSegment("seg67","step6","step7",620,()=>{
+                                setNote(4);
+
+                                setTimeout(()=>{
+                                  animateSegment("seg73a","step7","step7",260,()=>{
+                                    animateSegment("seg73b","step7","step7",620,()=>{
+                                      animateSegment("seg73c","step7","step3",280,()=>{
+                                        setTimeout(runPipeline,1700);
+                                      });
+                                    });
+                                  });
+                                },350);
+                              });
+                            },350);
+                          });
+                        },350);
+                      });
+                    });
+                  });
+                },350);
+              });
+            },350);
+          });
+        },350);
+      });
+    },450);
+  }
+
+  runPipeline();
+</script>
+
 </body>
 </html>
