@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage*
+htmlcov/
+build/
+dist/
+
+# Environments and credentials
+.env
+.env.*
+.venv/
+venv/
+env/
+.hf_token
+.wandb_api_key
+.*_token
+.*api_key
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+
+# Research artifacts
+cache/
+data/
+datasets/
+logs/
+runs/
+wandb/
+rollouts*/
+screening*/
+40_task_screening*/
+checkpoints/
+outputs/
+
+# Model and experiment binaries
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.zip
+*.tar
+*.tar.gz
+
+# Logs and temporary backups
+*.log
+*.bak
+*.tmp
+*.before_*
+*~
+
+# Keep the three small GitHub Pages videos even though other generated media
+# should stay out of the repository.
+*.mp4
+!fault.mp4
+!normal-vla.mp4
+!RL.mp4

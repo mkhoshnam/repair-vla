@@ -1,0 +1,5 @@
+# REPAIR-side dependencies. Install OpenVLA-OFT and LIBERO separately first;
+# they provide the VLA, simulator, and robotics dependency stack.
+numpy==1.26.4
+torch==2.2.0
+wandb==0.20.1

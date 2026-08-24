@@ -1,0 +1,146 @@
+{
+  "heldout_joint": "2",
+  "note": "reporting only; not used for task selection",
+  "per_task": {
+    "libero_10:0": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_10:1": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_10:2": {
+      "heldout_frozen_pct": 40,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_10:3": {
+      "heldout_frozen_pct": 20,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_10:4": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_10:5": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_10:6": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_10:7": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_10:8": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 80
+    },
+    "libero_10:9": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_goal:0": {
+      "heldout_frozen_pct": 80,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_goal:5": {
+      "heldout_frozen_pct": 80,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_goal:6": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_goal:7": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_goal:8": {
+      "heldout_frozen_pct": 100,
+      "heldout_class": "=",
+      "healthy": 100
+    },
+    "libero_object:0": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 80
+    },
+    "libero_object:1": {
+      "heldout_frozen_pct": 20,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_object:3": {
+      "heldout_frozen_pct": 80,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_object:6": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_object:8": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_object:9": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_spatial:0": {
+      "heldout_frozen_pct": 20,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_spatial:1": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    },
+    "libero_spatial:3": {
+      "heldout_frozen_pct": 100,
+      "heldout_class": "=",
+      "healthy": 100
+    },
+    "libero_spatial:5": {
+      "heldout_frozen_pct": 20,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_spatial:6": {
+      "heldout_frozen_pct": 100,
+      "heldout_class": "=",
+      "healthy": 100
+    },
+    "libero_spatial:7": {
+      "heldout_frozen_pct": 40,
+      "heldout_class": "*",
+      "healthy": 100
+    },
+    "libero_spatial:8": {
+      "heldout_frozen_pct": 0,
+      "heldout_class": "0",
+      "healthy": 100
+    }
+  }
+}

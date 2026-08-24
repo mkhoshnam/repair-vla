@@ -1,0 +1,21 @@
+rank	task_key	description	healthy	j0	j6	j2
+1	libero_spatial:0	pick up the black bowl between the plate and the ramekin and place it on the plate	1.00	0.20	1.00	0.20
+2	libero_goal:6	put the cream cheese in the bowl	1.00	0.40	0.60	0.30
+3	libero_object:6	pick up the butter and place it in the basket	1.00	0.30	0.70	0.10
+4	libero_10:4	put the white mug on the left plate and put the yellow and white mug on the right plate	0.90	0.10	0.40	0.00
+5	libero_10:6	put the white mug on the plate and put the chocolate pudding to the right of the plate	1.00	0.70	0.50	0.00
+6	libero_spatial:9	pick up the black bowl on the wooden cabinet and place it on the plate	1.00	0.00	0.70	0.00
+7	libero_goal:0	open the middle drawer of the cabinet	1.00	0.80	0.00	0.90
+8	libero_10:3	put the black bowl in the bottom drawer of the cabinet and close it	1.00	0.50	0.00	0.30
+9	libero_object:0	pick up the alphabet soup and place it in the basket	0.80	0.40	1.00	0.00
+10	libero_10:2	turn on the stove and put the moka pot on it	1.00	0.10	0.00	0.40
+11	libero_goal:3	open the top drawer and put the bowl inside	0.90	0.90	0.80	0.40
+12	libero_10:9	put the yellow and white mug in the microwave and close it	1.00	0.20	0.00	0.00
+13	libero_object:3	pick up the bbq sauce and place it in the basket	1.00	1.00	0.90	0.40
+14	libero_object:9	pick up the orange juice and place it in the basket	0.90	0.80	1.00	0.10
+15	libero_goal:9	put the wine bottle on the rack	0.90	1.00	0.00	0.00
+16	libero_10:0	put both the alphabet soup and the tomato sauce in the basket	1.00	1.00	0.50	0.00
+17	libero_10:1	put both the cream cheese box and the butter in the basket	1.00	0.40	1.00	0.00
+18	libero_10:5	pick up the book and place it in the back compartment of the caddy	1.00	1.00	0.00	0.00
+19	libero_10:7	put both the alphabet soup and the cream cheese box in the basket	1.00	0.70	0.90	0.00
+20	libero_10:8	put both moka pots on the stove	0.80	0.00	0.00	0.00

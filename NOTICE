@@ -1,0 +1,15 @@
+REPAIR
+======
+
+Copyright (c) 2026 Mohammad Khoshnazar, Mohammad Dehghani Tezerjani,
+Qing Yang, and Michael Beetz.
+
+REPAIR integrates with and adapts interfaces from OpenVLA-OFT, originally
+copyright (c) 2025 Moo Jin Kim, Chelsea Finn, and Percy Liang and distributed
+under the MIT License. OpenVLA-OFT is available at:
+https://github.com/moojink/openvla-oft
+
+The runtime also depends on separately distributed projects including LIBERO,
+robosuite, MuJoCo, and PyTorch. Their own licenses and citation requirements
+apply to those components. No upstream model weights or datasets are included
+in this repository.

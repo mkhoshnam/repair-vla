@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use REPAIR, please cite this software. Paper metadata will be added when available."
+title: "REPAIR: Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models"
+type: software
+authors:
+  - family-names: Khoshnazar
+    given-names: Mohammad
+  - family-names: Tezerjani
+    given-names: Mohammad Dehghani
+  - family-names: Yang
+    given-names: Qing
+  - family-names: Beetz
+    given-names: Michael
+repository-code: "https://github.com/mkhoshnam/repair-vla"
+url: "https://mkhoshnam.github.io/repair-vla/"
+license: MIT
+date-released: 2026-08-24

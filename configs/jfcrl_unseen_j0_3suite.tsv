@@ -1,0 +1,4 @@
+rank	task_key	description	healthy	j0	j6	j2
+1	libero_spatial:1	pick up the black bowl next to the ramekin and place it on the plate	1.00	0.60	0.00	0.00
+2	libero_object:6	pick up the butter and place it in the basket	1.00	0.20	0.80	0.00
+3	libero_goal:6	put the cream cheese in the bowl	1.00	0.20	0.40	0.00
