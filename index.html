@@ -6,7 +6,7 @@
 
   <title>REPAIR — Reinforcement-Enabled Policy Adaptation for Impaired Robots</title>
   <meta name="description"
-        content="REPAIR learns capability-aware reinforcement-learning corrections for Vision-Language-Action robot policies under physical faults." />
+        content="REPAIR uses joint-factorized capability inference and bounded residual reinforcement learning to adapt pretrained Vision-Language-Action policies under physical joint faults." />
 
   <style>
     :root{
@@ -440,7 +440,7 @@
     </div>
 
     <div class="claim">
-      A capability-aware residual policy detects when physical execution no longer matches the intended action and adapts control to recover the task.
+      A joint-factorized capability model infers how the robot is physically responding and conditions a bounded residual policy that recovers task execution under joint faults.
     </div>
   </header>
 
@@ -572,13 +572,13 @@
       </div>
 
       <div id="note3" class="note-card">
-        <strong>3. REPAIR infers the change</strong>
-        Execution history is converted into a capability representation using shared encoding and kinematic grounding.
+        <strong>3. REPAIR infers capability</strong>
+        Per-joint command-response histories are encoded with shared weights and grounded by the live manipulator Jacobian.
       </div>
 
       <div id="note4" class="note-card">
         <strong>4. RL compensates</strong>
-        The residual controller produces the action correction required by the changed capability.
+        A capability-conditioned SAC policy produces a bounded six-dimensional correction to the VLA arm action.
       </div>
 
       <div id="note5" class="note-card">
@@ -588,20 +588,20 @@
     </div>
 
     <div class="info-row">
-      <div class="chip">Task reward only</div>
-      <div class="chip">No explicit fault identity</div>
+      <div class="chip">Sparse task reward</div>
+      <div class="chip">No fault label in the policy</div>
       <div class="chip">No joint-ID embedding</div>
       <div class="chip">No reference trajectory</div>
       <div class="chip">No fault demonstrations</div>
     </div>
 
     <div class="generalize">
-      <div class="generalize-title">Why recovery can transfer to a held-out actuator fault</div>
+      <div class="generalize-title">Why recovery can transfer to a globally held-out actuator</div>
 
       <div class="generalize-flow">
         <div class="g-card">
           <strong>Shared capability encoder</strong>
-          <span>the same response model is reused across actuators</span>
+          <span>the same temporal response model is reused across all joints</span>
         </div>
 
         <div class="g-arrow">→</div>
@@ -614,8 +614,8 @@
         <div class="g-arrow">→</div>
 
         <div class="g-card">
-          <strong>Held-out fault</strong>
-          <span>the same recovery pathway can be applied without an identity label</span>
+          <strong>Held-out actuator</strong>
+          <span>the recovery pathway applies without a categorical joint identity</span>
         </div>
       </div>
     </div>
@@ -623,29 +623,29 @@
 
   <h2 id="abstract">Abstract</h2>
   <p>
-    Vision-language-action (VLA) policies are typically deployed under the assumption that the robot body realizes commanded actions similarly to the conditions seen during training. Persistent actuator faults violate this assumption: the policy may continue to predict semantically reasonable actions while a damaged or constrained actuator changes the action-to-motion map. We study whether task-reward reinforcement learning can recover task performance around a pretrained VLA under such physical failures without fault demonstrations, explicit fault identity, or a fault-free reference trajectory. We introduce <strong>Joint-Factorized Capability RL (JFCRL)</strong>, which processes each actuator with the same shared temporal capability encoder, grounds each capability token using the current manipulator Jacobian, composes the resulting tokens with cross-actuator attention, and conditions a Soft Actor-Critic correction policy on the resulting capability latent. Self-supervised joint-motion, end-effector-motion, and kinematic-consistency objectives train the capability representation directly from execution, while the control policy is optimized from task reward. In a preliminary held-out-fault experiment, the base VLA succeeds in 20% of episodes, while JFCRL reaches 60% without additional adaptation to the held-out actuator fault. A global-context baseline fits the seen fault distribution strongly but does not show comparable held-out transfer. These results support actuator-factorized, kinematically grounded capability inference as a promising mechanism for VLA recovery under unseen embodiment faults.
+    Vision-language-action (VLA) policies normally assume that the robot body realizes commanded actions as expected. A physical joint fault breaks this assumption even when the VLA continues to produce a semantically appropriate action. REPAIR keeps the pretrained VLA frozen and learns a small residual controller around its arm action. Its <strong>Joint-Factorized Capability RL (JFCRL)</strong> method applies one shared temporal encoder to the command-response history of every arm joint, grounds the resulting tokens with the live manipulator Jacobian, and composes them with cross-joint attention. The inferred capability state FiLM-conditions a Soft Actor-Critic policy that outputs a bounded six-dimensional arm correction, while the VLA gripper command passes through unchanged. Self-supervised joint-motion, end-effector-motion, and kinematic-consistency objectives learn the capability representation directly from execution. The study evaluates one shared policy across 28 manipulation tasks, holds one actuator out globally from training and checkpoint selection, tests transfer beyond the persistent locks used for training, and validates recovery on a physical Franka Panda. In selected unseen-fault and real-robot settings, task success exceeds 70% without fault labels, fault demonstrations, or a nominal reference trajectory entering the learned policy.
   </p>
 
   <h2 id="approach">Approach</h2>
 
-  <h3>Fault-aware execution through capability inference</h3>
+  <h3>Capability inference from execution history</h3>
   <p>
-    REPAIR detects changes in physical capability from the discrepancy between commanded actions and the motion that the robot actually realizes.
+    For each of the seven Panda arm joints, REPAIR maintains a 16-step command-response history containing measured joint motion, realized end-effector motion, controller actions, and the current kinematic role. This allows the model to infer physical capability from how commands are actually realized, rather than from a supplied fault label.
   </p>
 
-  <h3>Shared capability representation</h3>
+  <h3>Joint-factorized capability representation</h3>
   <p>
-    A shared temporal encoder processes actuator response histories, while current kinematic information grounds those representations in their effect on robot motion.
+    The same temporal encoder processes every joint, creating a transferable command-response representation without a joint-ID embedding. Live Jacobian columns provide continuous geometric grounding, and cross-joint attention composes the seven joint representations into a single capability state.
   </p>
 
-  <h3>Residual reinforcement learning</h3>
+  <h3>Bounded residual reinforcement learning</h3>
   <p>
-    The inferred capability state conditions a residual reinforcement-learning controller that corrects the task-directed base action after a physical fault changes execution.
+    The capability state FiLM-conditions a Soft Actor-Critic actor and twin critics. The deterministic actor produces a bounded six-dimensional correction that is scaled and added to the frozen VLA arm action; the original gripper command bypasses reinforcement learning.
   </p>
 
-  <h3>Generalization</h3>
+  <h3>Self-supervised learning and transfer</h3>
   <p>
-    The recovery mechanism is designed to transfer across actuator faults by learning from physical response and kinematic role rather than from a symbolic fault identity.
+    Joint-motion, end-effector-motion, and kinematic-consistency predictions shape the capability representation, while sparse task success trains the control policy. Shared temporal weights provide the transfer prior, and live kinematics ground that reusable estimate for the robot's current configuration.
   </p>
 
   <h2 id="videos">Videos</h2>
@@ -684,7 +684,7 @@
 
   <h2 id="results">Results</h2>
   <p>
-    In the current held-out-fault pilot, the base VLA succeeds in <strong>20%</strong> of evaluation episodes, while JFCRL reaches <strong>60%</strong> using the same shared recovery policy and without additional adaptation to the held-out actuator fault. The result suggests that the factorized capability representation transfers beyond the fault conditions used for training. A global-context wide-pool baseline performs strongly on its seen fault distribution but does not show comparable transfer to the held-out fault.
+    One shared recovery policy is trained across 28 manipulation tasks using persistent locks on four seen joints, while a fifth joint is held out globally from task selection, training, and checkpoint choice. The same checkpoints are then evaluated on the held-out actuator under persistent locks and several previously unseen fault families, as well as on a physical Franka Panda. Without revealing the complete quantitative study before submission, REPAIR achieves <strong>more than 70% task success in selected unseen-fault settings</strong> and <strong>more than 75% on one real-robot task aggregate</strong>. Full task-level, baseline, ablation, cross-fault, and hardware results will accompany the paper.
   </p>
 
   <h2 id="bibtex">BibTeX</h2>
