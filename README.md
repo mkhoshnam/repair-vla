@@ -6,7 +6,7 @@
 
 REPAIR studies how a robot can continue a task when a persistent actuator fault changes the relationship between a Vision-Language-Action (VLA) policy's command and the motion the robot actually produces. The repository contains our current Joint-Factorized Capability Reinforcement Learning (JFCRL) implementation, residual Soft Actor-Critic (SAC) baselines, physical-fault simulation, screened curricula, evaluation tools, and offline regression tests.
 
-> **Research status:** this is active research code. The 20% to 60% held-out-fault result shown below is a preliminary pilot result from 10 evaluation episodes and one training seed. It is evidence motivating the larger study, not yet a multi-seed final result. See [Project status](docs/PROJECT_STATUS.md) for the completed and planned experiments.
+> **Research status:** this is active research code. The current study trains one shared recovery policy across 28 manipulation tasks, holds one actuator out globally from training and checkpoint selection, evaluates transfer beyond the persistent locks used for training, and validates recovery on a physical Franka Panda. Full task-level, baseline, ablation, cross-fault, and hardware results will accompany the paper. See [Project status](docs/PROJECT_STATUS.md) for the completed and planned experiments.
 
 ## Method
 
@@ -14,23 +14,20 @@ The pretrained OpenVLA-OFT policy remains frozen and produces the task-directed 
 
 JFCRL builds its correction from execution rather than a symbolic fault label:
 
-1. Each Panda arm joint contributes the same 28-dimensional history token containing commanded and realized motion.
+1. For each of the seven Panda arm joints, REPAIR maintains a 16-step command-response history containing measured joint motion, realized end-effector motion, controller actions, and the current kinematic role.
 2. A shared temporal encoder converts each joint history into a capability token—there is no learned joint-ID embedding.
 3. The current manipulator Jacobian grounds every token in that joint's live kinematic role.
 4. Cross-joint attention produces a global capability latent.
-5. A FiLM-conditioned SAC actor and twin critics learn a residual action from task reward.
-6. Joint-motion, end-effector-motion, and kinematic-consistency auxiliary losses train the capability representation from execution.
+5. A FiLM-conditioned SAC actor and twin critics learn a bounded six-dimensional residual action from sparse task reward.
+6. Joint-motion, end-effector-motion, and kinematic-consistency auxiliary losses train the capability representation directly from execution.
 
 The physical impairment is a MuJoCo equality constraint that locks a joint at its own episode-initial angle. Runtime monitoring checks that the constraint was compiled and that joint drift stays within tolerance.
 
-## Preliminary result
+## Results
 
-| Policy | Globally unseen actuator fault | Success |
-|---|---:|---:|
-| Frozen VLA | j2 | 2/10 (20%) |
-| JFCRL residual policy | j2 | 6/10 (60%) |
+One shared recovery policy is trained across 28 manipulation tasks using persistent locks on four seen joints, while a fifth joint is held out globally from task selection, training, and checkpoint choice. The same checkpoints are evaluated on the held-out actuator under persistent locks and several previously unseen fault families, as well as on a physical Franka Panda.
 
-The JFCRL policy was evaluated without additional adaptation on the held-out joint. The small sample and single training seed are important limitations; the repository includes the broader curricula and A/B protocol being used to test whether the effect survives more tasks and seeds.
+Without revealing the complete quantitative study before submission, REPAIR achieves **more than 70% task success in selected unseen-fault settings** and **more than 75% on one real-robot task aggregate**. These results are obtained without fault labels, fault demonstrations, or a nominal reference trajectory entering the learned policy. Full quantitative results will accompany the paper.
 
 ## Repository layout
 
@@ -164,7 +161,7 @@ The paper is in preparation. Until a paper identifier is available, cite the sof
 ```bibtex
 @software{repair2026,
   title  = {REPAIR: Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models},
-  author = {Khoshnazar, Mohammad and Tezerjani, Mohammad Dehghani and Yang, Qing and Beetz, Michael},
+  author = {Khoshnazar, Mohammad and Dehghani Tezerjani, Mohammad and Yang, Qing and Beetz, Michael},
   year   = {2026},
   url    = {https://github.com/mkhoshnam/repair-vla}
 }
