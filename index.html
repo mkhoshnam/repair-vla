@@ -1,870 +1,944 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>REPAIR — Reinforcement-Enabled Policy Adaptation for Impaired Robots</title>
   <meta name="description"
-        content="REPAIR uses joint-factorized capability inference and bounded residual reinforcement learning to adapt pretrained Vision-Language-Action policies under physical joint faults." />
+    content="REPAIR uses joint-factorized capability inference and bounded residual reinforcement learning to adapt pretrained Vision-Language-Action policies under physical joint faults." />
 
   <style>
-    :root{
-      --text:#0f172a;
-      --muted:#475569;
-      --line:#e2e8f0;
-      --bg:#ffffff;
-      --accent:#2563eb;
-      --soft:#f8fafc;
-      --green:#16a34a;
-      --red:#dc2626;
-      --orange:#ea580c;
+    :root {
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --bg: #ffffff;
+      --accent: #2563eb;
+      --soft: #f8fafc;
+      --green: #16a34a;
+      --red: #dc2626;
+      --orange: #ea580c;
     }
 
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      line-height:1.6;
+    * {
+      box-sizing: border-box
     }
 
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
-
-    .wrap{
-      max-width:1080px;
-      margin:0 auto;
-      padding:34px 18px 70px;
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
     }
 
-    header{text-align:center;margin-bottom:18px}
-
-    h1{
-      margin:0 0 8px;
-      font-size:32px;
-      font-weight:800;
-      letter-spacing:.2px;
+    a {
+      color: var(--accent);
+      text-decoration: none
     }
 
-    .subtitle{
-      margin:0 auto 10px;
-      max-width:900px;
-      color:var(--muted);
-      font-size:16px;
+    a:hover {
+      text-decoration: underline
     }
 
-    .links{
-      margin:8px 0 10px;
-      display:flex;
-      justify-content:center;
-      gap:16px;
-      flex-wrap:wrap;
-      font-size:14px;
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 34px 18px 70px;
     }
 
-    .links a{font-weight:600}
-
-    .claim{
-      margin:14px auto 0;
-      max-width:900px;
-      font-size:18px;
-      font-weight:600;
+    header {
+      text-align: center;
+      margin-bottom: 18px
     }
 
-    h2{
-      margin:26px 0 10px;
-      padding-top:18px;
-      border-top:1px solid var(--line);
-      font-size:22px;
-      font-weight:800;
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: .2px;
     }
 
-    h3{
-      margin:14px 0 8px;
-      font-size:16px;
-      font-weight:800;
+    .subtitle {
+      margin: 0 auto 10px;
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 16px;
     }
 
-    p{margin:10px 0}
-
-    .anim-wrap{
-      margin:18px 0 10px;
-      border:1px solid var(--line);
-      border-radius:18px;
-      background:linear-gradient(180deg,#fbfdff 0%,#f8fbff 100%);
-      overflow:hidden;
-      box-shadow:0 8px 24px rgba(15,23,42,.05);
+    .links {
+      margin: 8px 0 10px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 14px;
     }
 
-    .anim-head{
-      padding:16px 18px 12px;
-      border-bottom:1px solid var(--line);
-      background:#fff;
+    .links a {
+      font-weight: 600
     }
 
-    .anim-head h3{
-      margin:0 0 4px;
-      font-size:18px;
+    .claim {
+      margin: 14px auto 0;
+      max-width: 900px;
+      font-size: 18px;
+      font-weight: 600;
     }
 
-    .anim-head p{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
+    h2 {
+      margin: 26px 0 10px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 22px;
+      font-weight: 800;
     }
 
-    .anim-inner{
-      padding:18px 14px 12px;
+    h3 {
+      margin: 14px 0 8px;
+      font-size: 16px;
+      font-weight: 800;
     }
 
-    .pipeline-svg{
-      width:100%;
-      height:auto;
-      display:block;
+    p {
+      margin: 10px 0
     }
 
-    .step-box{
-      fill:#ffffff;
-      stroke:#cbd5e1;
-      stroke-width:2;
-      rx:20;
-      ry:20;
-      filter:drop-shadow(0 6px 18px rgba(15,23,42,.06));
-      transition:fill .25s ease,stroke .25s ease;
+    .anim-wrap {
+      margin: 18px 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f8fbff 100%);
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
     }
 
-    .step-label{
-      font-size:14px;
-      font-weight:700;
-      fill:#0f172a;
-      text-anchor:middle;
+    .anim-head {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
     }
 
-    .step-sub{
-      font-size:11px;
-      fill:#64748b;
-      text-anchor:middle;
+    .anim-head h3 {
+      margin: 0 0 4px;
+      font-size: 18px;
     }
 
-    .step-icon{
-      font-size:22px;
-      text-anchor:middle;
+    .anim-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
     }
 
-    .step-group{
-      opacity:.30;
-      transition:opacity .35s ease;
-      pointer-events:none;
+    .anim-inner {
+      padding: 18px 14px 12px;
     }
 
-    .step-group.visible{opacity:1}
-
-    .step-group.active .step-box{
-      fill:#eff6ff;
-      stroke:#60a5fa;
+    .pipeline-svg {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
-    .step-group.done .step-box{
-      fill:#f0fdf4;
-      stroke:#4ade80;
+    .step-box {
+      fill: #ffffff;
+      stroke: #cbd5e1;
+      stroke-width: 2;
+      rx: 20;
+      ry: 20;
+      filter: drop-shadow(0 6px 18px rgba(15, 23, 42, .06));
+      transition: fill .25s ease, stroke .25s ease;
+    }
+
+    .step-label {
+      font-size: 14px;
+      font-weight: 700;
+      fill: #0f172a;
+      text-anchor: middle;
+    }
+
+    .step-sub {
+      font-size: 11px;
+      fill: #64748b;
+      text-anchor: middle;
+    }
+
+    .step-icon {
+      font-size: 22px;
+      text-anchor: middle;
+    }
+
+    .step-group {
+      opacity: .30;
+      transition: opacity .35s ease;
+      pointer-events: none;
+    }
+
+    .step-group.visible {
+      opacity: 1
+    }
+
+    .step-group.active .step-box {
+      fill: #eff6ff;
+      stroke: #60a5fa;
+    }
+
+    .step-group.done .step-box {
+      fill: #f0fdf4;
+      stroke: #4ade80;
     }
 
     .step-group.fault.active .step-box,
-    .step-group.fault.visible .step-box{
-      fill:#fff7ed;
-      stroke:#fb923c;
+    .step-group.fault.visible .step-box {
+      fill: #fff7ed;
+      stroke: #fb923c;
     }
 
     .step-group.recovered.active .step-box,
-    .step-group.recovered.done .step-box{
-      fill:#f0fdf4;
-      stroke:#4ade80;
+    .step-group.recovered.done .step-box {
+      fill: #f0fdf4;
+      stroke: #4ade80;
     }
 
-    .fault-flash{
-      fill:#fff1f2;
-      stroke:#f87171;
-      stroke-width:2;
-      rx:14;
-      ry:14;
-      opacity:0;
-      transition:opacity .25s ease;
+    .fault-flash {
+      fill: #fff1f2;
+      stroke: #f87171;
+      stroke-width: 2;
+      rx: 14;
+      ry: 14;
+      opacity: 0;
+      transition: opacity .25s ease;
     }
 
-    .fault-flash.show{opacity:1}
-
-    .fault-text{
-      font-size:12px;
-      font-weight:800;
-      fill:#b91c1c;
-      text-anchor:middle;
-      opacity:0;
-      transition:opacity .25s ease;
+    .fault-flash.show {
+      opacity: 1
     }
 
-    .fault-text.show{opacity:1}
-
-    .flow-base{
-      fill:none;
-      stroke:#dbe2ea;
-      stroke-width:4;
-      stroke-linecap:round;
-      stroke-linejoin:round;
+    .fault-text {
+      font-size: 12px;
+      font-weight: 800;
+      fill: #b91c1c;
+      text-anchor: middle;
+      opacity: 0;
+      transition: opacity .25s ease;
     }
 
-    .flow-progress{
-      fill:none;
-      stroke:#2563eb;
-      stroke-width:5;
-      stroke-linecap:round;
-      stroke-linejoin:round;
-      stroke-dasharray:1000;
-      stroke-dashoffset:1000;
-      filter:drop-shadow(0 0 2px rgba(37,99,235,.35));
+    .fault-text.show {
+      opacity: 1
     }
 
-    .flow-feedback{stroke:#16a34a}
-
-    .pulse-dot{
-      fill:#2563eb;
-      opacity:0;
-      filter:drop-shadow(0 0 5px rgba(37,99,235,.5));
+    .flow-base {
+      fill: none;
+      stroke: #dbe2ea;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .notes-grid{
-      display:grid;
-      grid-template-columns:repeat(5,minmax(0,1fr));
-      gap:12px;
-      padding:5px 14px 14px;
+    .flow-progress {
+      fill: none;
+      stroke: #2563eb;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      filter: drop-shadow(0 0 2px rgba(37, 99, 235, .35));
     }
 
-    .note-card{
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
-      padding:11px;
-      font-size:12px;
-      color:var(--muted);
-      min-height:86px;
-      opacity:.52;
-      transition:all .3s ease;
-      line-height:1.45;
+    .flow-feedback {
+      stroke: #16a34a
     }
 
-    .note-card strong{
-      display:block;
-      color:var(--text);
-      margin-bottom:4px;
-      font-size:12.25px;
-      line-height:1.35;
+    .pulse-dot {
+      fill: #2563eb;
+      opacity: 0;
+      filter: drop-shadow(0 0 5px rgba(37, 99, 235, .5));
     }
 
-    .note-card.active{
-      opacity:1;
-      border-color:#93c5fd;
-      background:#f8fbff;
-      box-shadow:0 4px 16px rgba(37,99,235,.08);
-      transform:translateY(-1px);
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      padding: 5px 14px 14px;
     }
 
-    .info-row{
-      display:flex;
-      justify-content:center;
-      gap:9px;
-      flex-wrap:wrap;
-      padding:0 14px 14px;
+    .note-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 11px;
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 86px;
+      opacity: .52;
+      transition: all .3s ease;
+      line-height: 1.45;
     }
 
-    .chip{
-      border:1px solid var(--line);
-      background:#fff;
-      color:#334155;
-      border-radius:999px;
-      padding:6px 11px;
-      font-size:11.5px;
-      font-weight:700;
+    .note-card strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-size: 12.25px;
+      line-height: 1.35;
     }
 
-    .generalize{
-      margin:2px 14px 17px;
-      border-top:1px solid var(--line);
-      padding-top:13px;
+    .note-card.active {
+      opacity: 1;
+      border-color: #93c5fd;
+      background: #f8fbff;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, .08);
+      transform: translateY(-1px);
     }
 
-    .generalize-title{
-      text-align:center;
-      font-size:12.5px;
-      font-weight:800;
-      color:var(--text);
-      margin-bottom:9px;
+    .info-row {
+      display: flex;
+      justify-content: center;
+      gap: 9px;
+      flex-wrap: wrap;
+      padding: 0 14px 14px;
     }
 
-    .generalize-flow{
-      display:grid;
-      grid-template-columns:1fr 30px 1.15fr 30px 1fr;
-      gap:7px;
-      align-items:center;
-      max-width:810px;
-      margin:0 auto;
+    .chip {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #334155;
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 11.5px;
+      font-weight: 700;
     }
 
-    .g-card{
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#fff;
-      padding:9px 10px;
-      text-align:center;
-      min-height:66px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
+    .generalize {
+      margin: 2px 14px 17px;
+      border-top: 1px solid var(--line);
+      padding-top: 13px;
     }
 
-    .g-card strong{
-      font-size:12px;
-      line-height:1.3;
+    .generalize-title {
+      text-align: center;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 9px;
     }
 
-    .g-card span{
-      margin-top:3px;
-      font-size:10.7px;
-      color:var(--muted);
-      line-height:1.35;
+    .generalize-flow {
+      display: grid;
+      grid-template-columns: 1fr 30px 1.15fr 30px 1fr;
+      gap: 7px;
+      align-items: center;
+      max-width: 810px;
+      margin: 0 auto;
     }
 
-    .g-arrow{
-      text-align:center;
-      color:#94a3b8;
-      font-size:20px;
+    .g-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 9px 10px;
+      text-align: center;
+      min-height: 66px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    .results-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:14px;
-      margin-top:14px;
+    .g-card strong {
+      font-size: 12px;
+      line-height: 1.3;
     }
 
-    .video-card{
-      display:flex;
-      flex-direction:column;
-      gap:7px;
+    .g-card span {
+      margin-top: 3px;
+      font-size: 10.7px;
+      color: var(--muted);
+      line-height: 1.35;
     }
 
-    .video-title{
-      text-align:center;
-      font-size:13px;
-      font-weight:750;
-      color:var(--text);
+    .g-arrow {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 20px;
     }
 
-    .video{
-      border:1px solid var(--line);
-      border-radius:14px;
-      overflow:hidden;
-      background:#0f172a;
-      aspect-ratio:16/9;
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
     }
 
-    pre{
-      margin:0;
-      padding:14px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:var(--soft);
-      overflow:auto;
-      font-size:13px;
-      line-height:1.45;
+    .video-card {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
     }
 
-    .footer{
-      margin-top:28px;
-      padding-top:16px;
-      border-top:1px solid var(--line);
-      color:var(--muted);
-      font-size:13px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
+    .video-title {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 750;
+      color: var(--text);
     }
 
-    @media(max-width:980px){
-      .notes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .video {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #0f172a;
+      aspect-ratio: 16/9;
     }
 
-    @media(max-width:760px){
-      .notes-grid{grid-template-columns:1fr}
-      .generalize-flow{grid-template-columns:1fr}
-      .g-arrow{transform:rotate(90deg)}
-      .results-grid{grid-template-columns:1fr}
-      h1{font-size:26px}
-      .claim{font-size:16px}
+    pre {
+      margin: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--soft);
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    @media(max-width:980px) {
+      .notes-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+    }
+
+    @media(max-width:760px) {
+      .notes-grid {
+        grid-template-columns: 1fr
+      }
+
+      .generalize-flow {
+        grid-template-columns: 1fr
+      }
+
+      .g-arrow {
+        transform: rotate(90deg)
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr
+      }
+
+      h1 {
+        font-size: 26px
+      }
+
+      .claim {
+        font-size: 16px
+      }
     }
   </style>
 </head>
 
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-  <header>
-    <h1>REPAIR</h1>
+    <header>
+      <h1>REPAIR</h1>
 
-    <div class="subtitle">
-      Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models
-    </div>
-
-    <div class="authors" style="margin-top:10px;">
-      <strong>Mohammad Khoshnazar</strong><sup>1</sup> ·
-      <strong>Mohammad Dehghani Tezerjani</strong><sup>2</sup> ·
-      <strong>Qing Yang</strong><sup>2</sup> ·
-      <strong>Michael Beetz</strong><sup>1</sup>
-    </div>
-
-    <div class="affil">
-      <sup>1</sup> University of Bremen · Institute for Artificial Intelligence
-      &nbsp;&nbsp;·&nbsp;&nbsp;
-      <sup>2</sup> University of North Texas
-    </div>
-
-    <div class="links">
-      <a href="#" target="_blank" rel="noopener">Paper</a>
-      <a href="https://mkhoshnam.github.io/repair-vla/" target="_blank" rel="noopener">Project</a>
-      <a href="https://github.com/mkhoshnam/repair-vla" target="_blank" rel="noopener">Code</a>
-      <a href="#videos">Videos</a>
-      <a href="#approach">Approach</a>
-      <a href="#bibtex">BibTeX</a>
-    </div>
-
-    <div class="claim">
-      A joint-factorized capability model infers how the robot is physically responding and conditions a bounded residual policy that recovers task execution under joint faults.
-    </div>
-  </header>
-
-  <div class="anim-wrap">
-    <div class="anim-head">
-      <h3>REPAIR pipeline</h3>
-      <p>The animation shows the key story: nominal control, physical fault, capability inference, and recovery.</p>
-    </div>
-
-    <div class="anim-inner">
-      <svg class="pipeline-svg"
-           viewBox="0 0 1120 350"
-           xmlns="http://www.w3.org/2000/svg"
-           aria-label="Animated REPAIR pipeline">
-
-        <!-- nominal control -->
-        <g id="step1" class="step-group visible active">
-          <rect class="step-box" x="20" y="48" width="180" height="112"/>
-          <text class="step-icon" x="110" y="82">👁️</text>
-          <text class="step-label" x="110" y="108">Task + Observation</text>
-          <text class="step-sub" x="110" y="132">language · vision · robot state</text>
-        </g>
-
-        <g id="step2" class="step-group">
-          <rect class="step-box" x="245" y="48" width="180" height="112"/>
-          <text class="step-icon" x="335" y="82">🧠</text>
-          <text class="step-label" x="335" y="108">Pretrained VLA</text>
-          <text class="step-sub" x="335" y="132">task-directed base action</text>
-        </g>
-
-        <g id="step3" class="step-group">
-          <rect class="step-box" x="470" y="48" width="180" height="112"/>
-          <text class="step-icon" x="560" y="82">➕</text>
-          <text class="step-label" x="560" y="108">Action Composition</text>
-          <text class="step-sub" x="560" y="132">base action + correction</text>
-        </g>
-
-        <g id="step4" class="step-group">
-          <rect class="step-box" x="695" y="48" width="180" height="112"/>
-          <text class="step-icon" x="785" y="82">🦾</text>
-          <text class="step-label" x="785" y="108">Robot Execution</text>
-          <text class="step-sub" x="785" y="132">command is realized physically</text>
-        </g>
-
-        <!-- fault event -->
-        <rect id="faultFlash" class="fault-flash" x="908" y="64" width="180" height="84"/>
-        <text id="faultText1" class="fault-text" x="998" y="96">PHYSICAL FAULT</text>
-        <text id="faultText2" class="step-sub" x="998" y="116" style="opacity:0">
-          <tspan x="998" dy="0">execution no longer</tspan>
-          <tspan x="998" dy="14">matches command</tspan>
-        </text>
-
-        <!-- recovery loop -->
-        <g id="step5" class="step-group fault">
-          <rect class="step-box" x="775" y="225" width="210" height="100"/>
-          <text class="step-icon" x="880" y="256">📡</text>
-          <text class="step-label" x="880" y="281">Execution Mismatch</text>
-          <text class="step-sub" x="880" y="303">command vs. realized motion</text>
-        </g>
-
-        <g id="step6" class="step-group">
-          <rect class="step-box" x="500" y="225" width="220" height="100"/>
-          <text class="step-icon" x="610" y="256">🔗</text>
-          <text class="step-label" x="610" y="281">Capability Inference</text>
-          <text class="step-sub" x="610" y="301">shared encoder · Jacobian · attention</text>
-        </g>
-
-        <g id="step7" class="step-group">
-          <rect class="step-box" x="230" y="225" width="215" height="100"/>
-          <text class="step-icon" x="337" y="256">🎛️</text>
-          <text class="step-label" x="337" y="281">Residual RL</text>
-          <text class="step-sub" x="337" y="301">learns the corrective action</text>
-        </g>
-
-        <!-- recovery result -->
-        <g id="step8" class="step-group recovered">
-          <rect class="step-box" x="20" y="225" width="165" height="100"/>
-          <text class="step-icon" x="102" y="256">✅</text>
-          <text class="step-label" x="102" y="281">Recovered Control</text>
-          <text class="step-sub" x="102" y="301">task continues under the fault</text>
-        </g>
-
-        <!-- base routes -->
-        <path class="flow-base" d="M200 104 L245 104"/>
-        <path class="flow-base" d="M425 104 L470 104"/>
-        <path class="flow-base" d="M650 104 L695 104"/>
-
-        <!-- fault → mismatch -->
-        <path class="flow-base" d="M785 160 L785 192 L880 192 L880 225"/>
-
-        <!-- mismatch → capability → RL → recovered -->
-        <path class="flow-base" d="M775 275 L720 275"/>
-        <path class="flow-base" d="M500 275 L445 275"/>
-        <path class="flow-base" d="M230 275 L185 275"/>
-
-        <!-- recovered correction loops into composition -->
-        <path class="flow-base" d="M102 225 L102 190 L560 190 L560 160"/>
-
-        <!-- animated route overlays -->
-        <path id="seg12" class="flow-progress" d="M200 104 L245 104"/>
-        <path id="seg23" class="flow-progress" d="M425 104 L470 104"/>
-        <path id="seg34" class="flow-progress" d="M650 104 L695 104"/>
-
-        <path id="seg45a" class="flow-progress flow-feedback" d="M785 160 L785 192"/>
-        <path id="seg45b" class="flow-progress flow-feedback" d="M785 192 L880 192"/>
-        <path id="seg45c" class="flow-progress flow-feedback" d="M880 192 L880 225"/>
-
-        <path id="seg56" class="flow-progress flow-feedback" d="M775 275 L720 275"/>
-        <path id="seg67" class="flow-progress" d="M500 275 L445 275"/>
-        <path id="seg78" class="flow-progress" d="M230 275 L185 275"/>
-
-        <path id="seg83a" class="flow-progress" d="M102 225 L102 190"/>
-        <path id="seg83b" class="flow-progress" d="M102 190 L560 190"/>
-        <path id="seg83c" class="flow-progress" d="M560 190 L560 160"/>
-
-        <circle id="pulseDot" class="pulse-dot" cx="200" cy="104" r="8"/>
-      </svg>
-    </div>
-
-    <div class="notes-grid">
-      <div id="note1" class="note-card active">
-        <strong>1. VLA performs the task</strong>
-        The base policy generates the task-directed action from the current observation.
+      <div class="subtitle">
+        Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models
       </div>
 
-      <div id="note2" class="note-card">
-        <strong>2. A physical fault occurs</strong>
-        The robot's response changes, so the commanded motion and realized motion begin to disagree.
+      <div class="authors" style="margin-top:10px;">
+        <strong>Mohammad Khoshnazar</strong><sup>1</sup> ·
+        <strong>Mohammad Dehghani Tezerjani</strong><sup>2</sup> ·
+        <strong>Qing Yang</strong><sup>2</sup> ·
+        <strong>Michael Beetz</strong><sup>1</sup>
       </div>
 
-      <div id="note3" class="note-card">
-        <strong>3. REPAIR infers capability</strong>
-        Per-joint command-response histories are encoded with shared weights and grounded by the live manipulator Jacobian.
+      <div class="affil">
+        <sup>1</sup> University of Bremen · Institute for Artificial Intelligence
+        &nbsp;&nbsp;·&nbsp;&nbsp;
+        <sup>2</sup> University of North Texas
       </div>
 
-      <div id="note4" class="note-card">
-        <strong>4. RL compensates</strong>
-        A capability-conditioned SAC policy produces a bounded six-dimensional correction to the VLA arm action.
+      <div class="links">
+        <a href="#" target="_blank" rel="noopener">Paper</a>
+        <a href="https://mkhoshnam.github.io/repair-vla/" target="_blank" rel="noopener">Project</a>
+        <a href="https://github.com/mkhoshnam/repair-vla" target="_blank" rel="noopener">Code</a>
+        <a href="#videos">Videos</a>
+        <a href="#approach">Approach</a>
+        <a href="#bibtex">BibTeX</a>
       </div>
 
-      <div id="note5" class="note-card">
-        <strong>5. The task recovers</strong>
-        The correction is combined with the base action and control continues while the physical impairment remains.
+      <div class="claim">
+        A joint-factorized capability model infers how the robot is physically responding and conditions a bounded
+        residual policy that recovers task execution under joint faults.
       </div>
-    </div>
+    </header>
 
-    <div class="info-row">
-      <div class="chip">Sparse task reward</div>
-      <div class="chip">No fault label in the policy</div>
-      <div class="chip">No joint-ID embedding</div>
-      <div class="chip">No reference trajectory</div>
-      <div class="chip">No fault demonstrations</div>
-    </div>
+    <div class="anim-wrap">
+      <div class="anim-head">
+        <h3>REPAIR pipeline</h3>
+        <p>The animation shows the key story: nominal control, physical fault, capability inference, and recovery.</p>
+      </div>
 
-    <div class="generalize">
-      <div class="generalize-title">Why recovery can transfer to a globally held-out actuator</div>
+      <div class="anim-inner">
+        <svg class="pipeline-svg" viewBox="0 0 1120 350" xmlns="http://www.w3.org/2000/svg"
+          aria-label="Animated REPAIR pipeline">
 
-      <div class="generalize-flow">
-        <div class="g-card">
-          <strong>Shared capability encoder</strong>
-          <span>the same temporal response model is reused across all joints</span>
+          <!-- nominal control -->
+          <g id="step1" class="step-group visible active">
+            <rect class="step-box" x="20" y="48" width="180" height="112" />
+            <text class="step-icon" x="110" y="82">👁️</text>
+            <text class="step-label" x="110" y="108">Task + Observation</text>
+            <text class="step-sub" x="110" y="132">language · vision · robot state</text>
+          </g>
+
+          <g id="step2" class="step-group">
+            <rect class="step-box" x="245" y="48" width="180" height="112" />
+            <text class="step-icon" x="335" y="82">🧠</text>
+            <text class="step-label" x="335" y="108">Pretrained VLA</text>
+            <text class="step-sub" x="335" y="132">task-directed base action</text>
+          </g>
+
+          <g id="step3" class="step-group">
+            <rect class="step-box" x="470" y="48" width="180" height="112" />
+            <text class="step-icon" x="560" y="82">➕</text>
+            <text class="step-label" x="560" y="108">Action Composition</text>
+            <text class="step-sub" x="560" y="132">base action + correction</text>
+          </g>
+
+          <g id="step4" class="step-group">
+            <rect class="step-box" x="695" y="48" width="180" height="112" />
+            <text class="step-icon" x="785" y="82">🦾</text>
+            <text class="step-label" x="785" y="108">Robot Execution</text>
+            <text class="step-sub" x="785" y="132">command is realized physically</text>
+          </g>
+
+          <!-- fault event -->
+          <rect id="faultFlash" class="fault-flash" x="908" y="64" width="180" height="84" />
+          <text id="faultText1" class="fault-text" x="998" y="96">PHYSICAL FAULT</text>
+          <text id="faultText2" class="step-sub" x="998" y="116" style="opacity:0">
+            <tspan x="998" dy="0">execution no longer</tspan>
+            <tspan x="998" dy="14">matches command</tspan>
+          </text>
+
+          <!-- recovery loop -->
+          <g id="step5" class="step-group fault">
+            <rect class="step-box" x="775" y="225" width="210" height="100" />
+            <text class="step-icon" x="880" y="256">📡</text>
+            <text class="step-label" x="880" y="281">Execution Mismatch</text>
+            <text class="step-sub" x="880" y="303">command vs. realized motion</text>
+          </g>
+
+          <g id="step6" class="step-group">
+            <rect class="step-box" x="500" y="225" width="220" height="100" />
+            <text class="step-icon" x="610" y="256">🔗</text>
+            <text class="step-label" x="610" y="281">Capability Inference</text>
+            <text class="step-sub" x="610" y="301">shared encoder · Jacobian · attention</text>
+          </g>
+
+          <g id="step7" class="step-group">
+            <rect class="step-box" x="230" y="225" width="215" height="100" />
+            <text class="step-icon" x="337" y="256">🎛️</text>
+            <text class="step-label" x="337" y="281">Residual RL</text>
+            <text class="step-sub" x="337" y="301">learns the corrective action</text>
+          </g>
+
+          <!-- recovery result -->
+          <g id="step8" class="step-group recovered">
+            <rect class="step-box" x="20" y="225" width="165" height="100" />
+            <text class="step-icon" x="102" y="256">✅</text>
+            <text class="step-label" x="102" y="281">Recovered Control</text>
+            <text class="step-sub" x="102" y="301">task continues under the fault</text>
+          </g>
+
+          <!-- base routes -->
+          <path class="flow-base" d="M200 104 L245 104" />
+          <path class="flow-base" d="M425 104 L470 104" />
+          <path class="flow-base" d="M650 104 L695 104" />
+
+          <!-- fault → mismatch -->
+          <path class="flow-base" d="M785 160 L785 192 L880 192 L880 225" />
+
+          <!-- mismatch → capability → RL → recovered -->
+          <path class="flow-base" d="M775 275 L720 275" />
+          <path class="flow-base" d="M500 275 L445 275" />
+          <path class="flow-base" d="M230 275 L185 275" />
+
+          <!-- recovered correction loops into composition -->
+          <path class="flow-base" d="M102 225 L102 190 L560 190 L560 160" />
+
+          <!-- animated route overlays -->
+          <path id="seg12" class="flow-progress" d="M200 104 L245 104" />
+          <path id="seg23" class="flow-progress" d="M425 104 L470 104" />
+          <path id="seg34" class="flow-progress" d="M650 104 L695 104" />
+
+          <path id="seg45a" class="flow-progress flow-feedback" d="M785 160 L785 192" />
+          <path id="seg45b" class="flow-progress flow-feedback" d="M785 192 L880 192" />
+          <path id="seg45c" class="flow-progress flow-feedback" d="M880 192 L880 225" />
+
+          <path id="seg56" class="flow-progress flow-feedback" d="M775 275 L720 275" />
+          <path id="seg67" class="flow-progress" d="M500 275 L445 275" />
+          <path id="seg78" class="flow-progress" d="M230 275 L185 275" />
+
+          <path id="seg83a" class="flow-progress" d="M102 225 L102 190" />
+          <path id="seg83b" class="flow-progress" d="M102 190 L560 190" />
+          <path id="seg83c" class="flow-progress" d="M560 190 L560 160" />
+
+          <circle id="pulseDot" class="pulse-dot" cx="200" cy="104" r="8" />
+        </svg>
+      </div>
+
+      <div class="notes-grid">
+        <div id="note1" class="note-card active">
+          <strong>1. VLA performs the task</strong>
+          The base policy generates the task-directed action from the current observation.
         </div>
 
-        <div class="g-arrow">→</div>
-
-        <div class="g-card">
-          <strong>Live kinematic grounding</strong>
-          <span>the Jacobian supplies the current geometric role</span>
+        <div id="note2" class="note-card">
+          <strong>2. A physical fault occurs</strong>
+          The robot's response changes, so the commanded motion and realized motion begin to disagree.
         </div>
 
-        <div class="g-arrow">→</div>
+        <div id="note3" class="note-card">
+          <strong>3. REPAIR infers capability</strong>
+          Per-joint command-response histories are encoded with shared weights and grounded by the live manipulator
+          Jacobian.
+        </div>
 
-        <div class="g-card">
-          <strong>Held-out actuator</strong>
-          <span>the recovery pathway applies without a categorical joint identity</span>
+        <div id="note4" class="note-card">
+          <strong>4. RL compensates</strong>
+          A capability-conditioned SAC policy produces a bounded six-dimensional correction to the VLA arm action.
+        </div>
+
+        <div id="note5" class="note-card">
+          <strong>5. The task recovers</strong>
+          The correction is combined with the base action and control continues while the physical impairment remains.
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="chip">Sparse task reward</div>
+        <div class="chip">No fault label in the policy</div>
+        <div class="chip">No joint-ID embedding</div>
+        <div class="chip">No reference trajectory</div>
+        <div class="chip">No fault demonstrations</div>
+      </div>
+
+      <div class="generalize">
+        <div class="generalize-title">Why recovery can transfer to a globally held-out actuator</div>
+
+        <div class="generalize-flow">
+          <div class="g-card">
+            <strong>Shared capability encoder</strong>
+            <span>the same temporal response model is reused across all joints</span>
+          </div>
+
+          <div class="g-arrow">→</div>
+
+          <div class="g-card">
+            <strong>Live kinematic grounding</strong>
+            <span>the Jacobian supplies the current geometric role</span>
+          </div>
+
+          <div class="g-arrow">→</div>
+
+          <div class="g-card">
+            <strong>Held-out actuator</strong>
+            <span>the recovery pathway applies without a categorical joint identity</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <h2 id="abstract">Abstract</h2>
-  <p>
-    Vision-language-action (VLA) policies normally assume that the robot body realizes commanded actions as expected. A physical joint fault breaks this assumption even when the VLA continues to produce a semantically appropriate action. REPAIR keeps the pretrained VLA frozen and learns a small residual controller around its arm action. Its <strong>Joint-Factorized Capability RL (JFCRL)</strong> method applies one shared temporal encoder to the command-response history of every arm joint, grounds the resulting tokens with the live manipulator Jacobian, and composes them with cross-joint attention. The inferred capability state FiLM-conditions a Soft Actor-Critic policy that outputs a bounded six-dimensional arm correction, while the VLA gripper command passes through unchanged. Self-supervised joint-motion, end-effector-motion, and kinematic-consistency objectives learn the capability representation directly from execution. The study evaluates one shared policy across 28 manipulation tasks, holds one actuator out globally from training and checkpoint selection, tests transfer beyond the persistent locks used for training, and validates recovery on a physical Franka Panda. In selected unseen-fault and real-robot settings, task success exceeds 70% without fault labels, fault demonstrations, or a nominal reference trajectory entering the learned policy.
-  </p>
+    <h2 id="abstract">Abstract</h2>
+    <p>
+      Vision-language-action (VLA) policies normally assume that the robot body realizes commanded actions as expected.
+      A physical joint fault breaks this assumption even when the VLA continues to produce a semantically appropriate
+      action. REPAIR keeps the pretrained VLA frozen and learns a small residual controller around its arm action. Its
+      <strong>Joint-Factorized Capability RL (JFCRL)</strong> method applies one shared temporal encoder to the
+      command-response history of every arm joint, grounds the resulting tokens with the live manipulator Jacobian, and
+      composes them with cross-joint attention. The inferred capability state FiLM-conditions a Soft Actor-Critic policy
+      that outputs a bounded six-dimensional arm correction, while the VLA gripper command passes through unchanged.
+      Self-supervised joint-motion, end-effector-motion, and kinematic-consistency objectives learn the capability
+      representation directly from execution. The study evaluates one shared policy across 28 manipulation tasks, holds
+      one actuator out globally from training and checkpoint selection, tests transfer beyond the persistent locks used
+      for training, and validates recovery on a physical Franka Panda. In selected unseen-fault and real-robot settings,
+      task success exceeds 70% without fault labels, fault demonstrations, or a nominal reference trajectory entering
+      the learned policy.
+    </p>
 
-  <h2 id="approach">Approach</h2>
+    <h2 id="approach">Approach</h2>
 
-  <h3>Capability inference from execution history</h3>
-  <p>
-    For each of the seven Panda arm joints, REPAIR maintains a 16-step command-response history containing measured joint motion, realized end-effector motion, controller actions, and the current kinematic role. This allows the model to infer physical capability from how commands are actually realized, rather than from a supplied fault label.
-  </p>
+    <h3>Capability inference from execution history</h3>
+    <p>
+      For each of the seven Panda arm joints, REPAIR maintains a 16-step command-response history containing measured
+      joint motion, realized end-effector motion, controller actions, and the current kinematic role. This allows the
+      model to infer physical capability from how commands are actually realized, rather than from a supplied fault
+      label.
+    </p>
 
-  <h3>Joint-factorized capability representation</h3>
-  <p>
-    The same temporal encoder processes every joint, creating a transferable command-response representation without a joint-ID embedding. Live Jacobian columns provide continuous geometric grounding, and cross-joint attention composes the seven joint representations into a single capability state.
-  </p>
+    <h3>Joint-factorized capability representation</h3>
+    <p>
+      The same temporal encoder processes every joint, creating a transferable command-response representation without a
+      joint-ID embedding. Live Jacobian columns provide continuous geometric grounding, and cross-joint attention
+      composes the seven joint representations into a single capability state.
+    </p>
 
-  <h3>Bounded residual reinforcement learning</h3>
-  <p>
-    The capability state FiLM-conditions a Soft Actor-Critic actor and twin critics. The deterministic actor produces a bounded six-dimensional correction that is scaled and added to the frozen VLA arm action; the original gripper command bypasses reinforcement learning.
-  </p>
+    <h3>Bounded residual reinforcement learning</h3>
+    <p>
+      The capability state FiLM-conditions a Soft Actor-Critic actor and twin critics. The deterministic actor produces
+      a bounded six-dimensional correction that is scaled and added to the frozen VLA arm action; the original gripper
+      command bypasses reinforcement learning.
+    </p>
 
-  <h3>Self-supervised learning and transfer</h3>
-  <p>
-    Joint-motion, end-effector-motion, and kinematic-consistency predictions shape the capability representation, while sparse task success trains the control policy. Shared temporal weights provide the transfer prior, and live kinematics ground that reusable estimate for the robot's current configuration.
-  </p>
+    <h3>Self-supervised learning and transfer</h3>
+    <p>
+      Joint-motion, end-effector-motion, and kinematic-consistency predictions shape the capability representation,
+      while sparse task success trains the control policy. Shared temporal weights provide the transfer prior, and live
+      kinematics ground that reusable estimate for the robot's current configuration.
+    </p>
 
-  <h2 id="videos">Videos</h2>
+    <h2 id="videos">Videos</h2>
 
-  <div class="results-grid">
-    <div class="video-card">
-      <div class="video-title">Nominal VLA Execution</div>
-      <div class="video">
-        <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
-          <source src="normal-vla.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+    <div class="results-grid">
+      <div class="video-card">
+        <div class="video-title">Nominal VLA Execution</div>
+        <div class="video">
+          <video controls playsinline autoplay muted loop preload="metadata"
+            style="width:100%;height:100%;display:block;object-fit:cover;">
+            <source src="media/normal-vla.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-title">VLA Under Physical Fault</div>
+        <div class="video">
+          <video controls playsinline autoplay muted loop preload="metadata"
+            style="width:100%;height:100%;display:block;object-fit:cover;">
+            <source src="media/fault.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-title">REPAIR: RL Recovery on Top of the VLA</div>
+        <div class="video">
+          <video controls playsinline autoplay muted loop preload="metadata"
+            style="width:100%;height:100%;display:block;object-fit:cover;">
+            <source src="media/RL.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
       </div>
     </div>
 
-    <div class="video-card">
-      <div class="video-title">VLA Under Physical Fault</div>
-      <div class="video">
-        <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
-          <source src="fault.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
+    <h2 id="results">Results</h2>
+    <p>
+      One shared recovery policy is trained across 28 manipulation tasks using persistent locks on four seen joints,
+      while a fifth joint is held out globally from task selection, training, and checkpoint choice. The same
+      checkpoints are then evaluated on the held-out actuator under persistent locks and several previously unseen fault
+      families, as well as on a physical Franka Panda. Without revealing the complete quantitative study before
+      submission, REPAIR achieves <strong>more than 70% task success in selected unseen-fault settings</strong> and
+      <strong>more than 75% on one real-robot task aggregate</strong>. Full task-level, baseline, ablation, cross-fault,
+      and hardware results will accompany the paper.
+    </p>
 
-    <div class="video-card">
-      <div class="video-title">REPAIR: RL Recovery on Top of the VLA</div>
-      <div class="video">
-        <video controls playsinline autoplay muted loop preload="metadata" style="width:100%;height:100%;display:block;object-fit:cover;">
-          <source src="RL.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
-  </div>
-
-  <h2 id="results">Results</h2>
-  <p>
-    One shared recovery policy is trained across 28 manipulation tasks using persistent locks on four seen joints, while a fifth joint is held out globally from task selection, training, and checkpoint choice. The same checkpoints are then evaluated on the held-out actuator under persistent locks and several previously unseen fault families, as well as on a physical Franka Panda. Without revealing the complete quantitative study before submission, REPAIR achieves <strong>more than 70% task success in selected unseen-fault settings</strong> and <strong>more than 75% on one real-robot task aggregate</strong>. Full task-level, baseline, ablation, cross-fault, and hardware results will accompany the paper.
-  </p>
-
-  <h2 id="bibtex">BibTeX</h2>
-  <pre>@misc{repair,
+    <h2 id="bibtex">BibTeX</h2>
+    <pre>@misc{repair,
   title = {REPAIR: Reinforcement-Enabled Policy Adaptation for Impaired Robots with Vision-Language-Action Models},
   url   = {https://mkhoshnam.github.io/repair-vla/}
 }</pre>
 
-  <div class="footer">
-    <div>REPAIR</div>
-    <div>Built with GitHub Pages</div>
+    <div class="footer">
+      <div>REPAIR</div>
+      <div>Built with GitHub Pages</div>
+    </div>
   </div>
-</div>
 
-<script>
-  const steps = ["step1","step2","step3","step4","step5","step6","step7","step8"];
-  const notes = ["note1","note2","note3","note4","note5"];
-  const segs = [
-    "seg12","seg23","seg34",
-    "seg45a","seg45b","seg45c",
-    "seg56","seg67","seg78",
-    "seg83a","seg83b","seg83c"
-  ];
+  <script>
+    const steps = ["step1", "step2", "step3", "step4", "step5", "step6", "step7", "step8"];
+    const notes = ["note1", "note2", "note3", "note4", "note5"];
+    const segs = [
+      "seg12", "seg23", "seg34",
+      "seg45a", "seg45b", "seg45c",
+      "seg56", "seg67", "seg78",
+      "seg83a", "seg83b", "seg83c"
+    ];
 
-  function resetPipeline(){
-    steps.forEach((id,idx)=>{
-      const el=document.getElementById(id);
-      el.classList.remove("visible","active","done");
-      if(idx===0) el.classList.add("visible","active");
-    });
+    function resetPipeline() {
+      steps.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        el.classList.remove("visible", "active", "done");
+        if (idx === 0) el.classList.add("visible", "active");
+      });
 
-    notes.forEach((id,idx)=>{
-      document.getElementById(id).classList.toggle("active",idx===0);
-    });
+      notes.forEach((id, idx) => {
+        document.getElementById(id).classList.toggle("active", idx === 0);
+      });
 
-    segs.forEach(id=>{
-      const p=document.getElementById(id);
-      const len=p.getTotalLength();
-      p.style.strokeDasharray=len;
-      p.style.strokeDashoffset=len;
-    });
+      segs.forEach(id => {
+        const p = document.getElementById(id);
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+      });
 
-    document.getElementById("faultFlash").classList.remove("show");
-    document.getElementById("faultText1").classList.remove("show");
-    document.getElementById("faultText2").style.opacity=0;
+      document.getElementById("faultFlash").classList.remove("show");
+      document.getElementById("faultText1").classList.remove("show");
+      document.getElementById("faultText2").style.opacity = 0;
 
-    const dot=document.getElementById("pulseDot");
-    dot.style.opacity=0;
-    dot.setAttribute("cx","200");
-    dot.setAttribute("cy","104");
-  }
-
-  function setVisible(id){
-    document.getElementById(id).classList.add("visible");
-  }
-
-  function setActive(id){
-    steps.forEach(stepId=>document.getElementById(stepId).classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-  }
-
-  function setDone(id){
-    const el=document.getElementById(id);
-    el.classList.remove("active");
-    el.classList.add("done");
-  }
-
-  function setNote(index){
-    notes.forEach((id,idx)=>{
-      document.getElementById(id).classList.toggle("active",idx===index);
-    });
-  }
-
-  function animateSegment(pathId,fromStep,toStep,duration,callback){
-    const path=document.getElementById(pathId);
-    const dot=document.getElementById("pulseDot");
-    const len=path.getTotalLength();
-
-    setActive(fromStep);
-    path.style.strokeDasharray=len;
-    path.style.strokeDashoffset=len;
-    dot.style.opacity=1;
-
-    let start=null;
-
-    function frame(ts){
-      if(!start) start=ts;
-      const p=Math.min((ts-start)/duration,1);
-
-      path.style.strokeDashoffset=len*(1-p);
-
-      const pt=path.getPointAtLength(len*p);
-      dot.setAttribute("cx",pt.x);
-      dot.setAttribute("cy",pt.y);
-
-      if(p<1){
-        requestAnimationFrame(frame);
-      }else{
-        if(toStep && toStep!==fromStep){
-          setDone(fromStep);
-          setVisible(toStep);
-          setActive(toStep);
-        }
-        if(callback) callback();
-      }
+      const dot = document.getElementById("pulseDot");
+      dot.style.opacity = 0;
+      dot.setAttribute("cx", "200");
+      dot.setAttribute("cy", "104");
     }
 
-    requestAnimationFrame(frame);
-  }
+    function setVisible(id) {
+      document.getElementById(id).classList.add("visible");
+    }
 
-  function showFault(){
-    document.getElementById("faultFlash").classList.add("show");
-    document.getElementById("faultText1").classList.add("show");
-    document.getElementById("faultText2").style.opacity=1;
-    setNote(1);
-  }
+    function setActive(id) {
+      steps.forEach(stepId => document.getElementById(stepId).classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
 
-  function runPipeline(){
-    resetPipeline();
+    function setDone(id) {
+      const el = document.getElementById(id);
+      el.classList.remove("active");
+      el.classList.add("done");
+    }
 
-    setTimeout(()=>{
-      animateSegment("seg12","step1","step2",620,()=>{
-        setNote(0);
+    function setNote(index) {
+      notes.forEach((id, idx) => {
+        document.getElementById(id).classList.toggle("active", idx === index);
+      });
+    }
 
-        setTimeout(()=>{
-          animateSegment("seg23","step2","step3",620,()=>{
+    function animateSegment(pathId, fromStep, toStep, duration, callback) {
+      const path = document.getElementById(pathId);
+      const dot = document.getElementById("pulseDot");
+      const len = path.getTotalLength();
 
-            setTimeout(()=>{
-              animateSegment("seg34","step3","step4",620,()=>{
+      setActive(fromStep);
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+      dot.style.opacity = 1;
 
-                setTimeout(()=>{
-                  showFault();
+      let start = null;
 
-                  setTimeout(()=>{
-                    animateSegment("seg45a","step4","step4",250,()=>{
-                      animateSegment("seg45b","step4","step4",400,()=>{
-                        animateSegment("seg45c","step4","step5",250,()=>{
-                          setNote(2);
+      function frame(ts) {
+        if (!start) start = ts;
+        const p = Math.min((ts - start) / duration, 1);
 
-                          setTimeout(()=>{
-                            animateSegment("seg56","step5","step6",600,()=>{
+        path.style.strokeDashoffset = len * (1 - p);
 
-                              setTimeout(()=>{
-                                animateSegment("seg67","step6","step7",600,()=>{
-                                  setNote(3);
+        const pt = path.getPointAtLength(len * p);
+        dot.setAttribute("cx", pt.x);
+        dot.setAttribute("cy", pt.y);
 
-                                  setTimeout(()=>{
-                                    animateSegment("seg78","step7","step8",520,()=>{
-                                      setNote(4);
+        if (p < 1) {
+          requestAnimationFrame(frame);
+        } else {
+          if (toStep && toStep !== fromStep) {
+            setDone(fromStep);
+            setVisible(toStep);
+            setActive(toStep);
+          }
+          if (callback) callback();
+        }
+      }
 
-                                      setTimeout(()=>{
-                                        animateSegment("seg83a","step8","step8",240,()=>{
-                                          animateSegment("seg83b","step8","step8",760,()=>{
-                                            animateSegment("seg83c","step8","step3",280,()=>{
-                                              setTimeout(runPipeline,1900);
+      requestAnimationFrame(frame);
+    }
+
+    function showFault() {
+      document.getElementById("faultFlash").classList.add("show");
+      document.getElementById("faultText1").classList.add("show");
+      document.getElementById("faultText2").style.opacity = 1;
+      setNote(1);
+    }
+
+    function runPipeline() {
+      resetPipeline();
+
+      setTimeout(() => {
+        animateSegment("seg12", "step1", "step2", 620, () => {
+          setNote(0);
+
+          setTimeout(() => {
+            animateSegment("seg23", "step2", "step3", 620, () => {
+
+              setTimeout(() => {
+                animateSegment("seg34", "step3", "step4", 620, () => {
+
+                  setTimeout(() => {
+                    showFault();
+
+                    setTimeout(() => {
+                      animateSegment("seg45a", "step4", "step4", 250, () => {
+                        animateSegment("seg45b", "step4", "step4", 400, () => {
+                          animateSegment("seg45c", "step4", "step5", 250, () => {
+                            setNote(2);
+
+                            setTimeout(() => {
+                              animateSegment("seg56", "step5", "step6", 600, () => {
+
+                                setTimeout(() => {
+                                  animateSegment("seg67", "step6", "step7", 600, () => {
+                                    setNote(3);
+
+                                    setTimeout(() => {
+                                      animateSegment("seg78", "step7", "step8", 520, () => {
+                                        setNote(4);
+
+                                        setTimeout(() => {
+                                          animateSegment("seg83a", "step8", "step8", 240, () => {
+                                            animateSegment("seg83b", "step8", "step8", 760, () => {
+                                              animateSegment("seg83c", "step8", "step3", 280, () => {
+                                                setTimeout(runPipeline, 1900);
+                                              });
                                             });
                                           });
-                                        });
-                                      },350);
-                                    });
-                                  },350);
-                                });
-                              },350);
-                            });
-                          },350);
+                                        }, 350);
+                                      });
+                                    }, 350);
+                                  });
+                                }, 350);
+                              });
+                            }, 350);
+                          });
                         });
                       });
-                    });
-                  },700);
-                },600);
-              });
-            },350);
-          });
-        },350);
-      });
-    },450);
-  }
+                    }, 700);
+                  }, 600);
+                });
+              }, 350);
+            });
+          }, 350);
+        });
+      }, 450);
+    }
 
-  runPipeline();
-</script>
+    runPipeline();
+  </script>
 
 </body>
+
 </html>
